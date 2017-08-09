@@ -1,0 +1,5 @@
+flask
+Flask-OAuthlib
+reportlab
+Flask-SQLAlchemy
+

@@ -1,4 +1,5 @@
 import pprint
+import hashlib
 
 from flask import *
 from flask_sqlalchemy import SQLAlchemy
@@ -49,8 +50,13 @@ def oauth_authorized():
     pprint.pprint(resp)
     session['oauth_token'] = (resp['access_token'], '')
     pprint.pprint(session)
-    me = facebook.get('/me')
+    me = facebook.get('/me/?fields=email,name,id,picture.height(50).width(50),first_name,last_name')
     session['me'] = me.data
+    try:
+        session['picture_url'] = me.data['picture']['data']['url']
+    except KeyError:
+        email = me.data['email'].ostrip().lower()
+        session['picture_url'] = "https://www.gravatar.com/avatar/{}".format(hashlib.md5(email).hexdigest())
 
     print 'Logged in as id={} name={} redirect={}'.format(
         me.data['id'], me.data['name'], request.args.get('next'))

@@ -11,6 +11,18 @@
 </head>
 
 <body>
+    <div id="user">
+    {% if 'me' in session %}
+    Hi, {{ session['me']['first_name'] }}!
+    {% if 'picture_url' in session %}
+    <img src="{{session['picture_url']}}">
+    TODO: Log out?
+    {% endif %}
+    {% else %}
+    <a href="{{ url_for('login') }}">Log in</a>
+    {% endif %}
+    </div>
+
     <div id="app">
     {% block content %}
     <h1>Hello.</h1>

@@ -4,8 +4,16 @@
 
 <a href="{{ url_for('login') }}">Log in</a>
 
+{% if 'me' in session %}
 <h2>Session</h2>
-{{ session | e }}
+Here's what Facebook told us:
+<dl>
+{% for key in session['me'] %}
+<dt>{{key | e}}</dt>
+<dd>{{session['me'][key] | e}}</dd>
+{% endfor %}
+</dl>
+{% endif %}
 
 
 {% endblock %}

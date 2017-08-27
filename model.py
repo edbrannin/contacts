@@ -25,6 +25,7 @@ class Contact(db.Model):
     def __repr__(self):
         return '<Contact %r>' % self.name
 
-    def list(*tags):
-        pass
+    @classmethod
+    def list(cls, *tags):
+        return cls.query.all()
 

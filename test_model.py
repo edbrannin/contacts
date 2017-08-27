@@ -9,6 +9,26 @@ fake = Faker()
 def fake_contacts(count):
     return [fake_contact() for c in range(count)]
 
+def assert_contacts_equal(expected_contact, observed_contact):
+    assert expected_contact.id == observed_contact.id
+    assert expected_contact.name == observed_contact.name
+    assert expected_contact.last_name == observed_contact.last_name
+    assert expected_contact.address == observed_contact.address
+    assert expected_contact.zip_code == observed_contact.zip_code
+    assert expected_contact.home_phone == observed_contact.home_phone
+    assert expected_contact.work_phone == observed_contact.work_phone
+    assert expected_contact.email == observed_contact.email
+    assert expected_contact.active == observed_contact.active
+    assert expected_contact.verified_on == observed_contact.verified_on
+    assert expected_contact.added_on == observed_contact.added_on
+    assert expected_contact.note == observed_contact.note
+    assert expected_contact.created_at == observed_contact.created_at
+    assert expected_contact.updated_at == observed_contact.updated_at
+    assert expected_contact.cached_tag_list == observed_contact.cached_tag_list
+    assert expected_contact.mobile_phone == observed_contact.mobile_phone
+
+
+
 def fake_contact():
     c = Contact()
     c.name = fake.name()
@@ -24,9 +44,14 @@ def fake_contact():
     c.note = fake.text()
     c.created_at = c.added_on
     c.updated_at = c.verified_on
+    # TODO Tags fake.random_sample_unique(TEST_TAGS)
     # c.cached_tag_list = db.Column(db.Text)
     c.mobile_phone = "555-555-632"
     return c
+
+TEST_TAGS = list(set(
+    [fake.color_name() for x in range(25)]
+    ))
 
 class ContactsTest(TestCase):
 
@@ -54,27 +79,24 @@ class ContactsTest(TestCase):
 
         cc = Contact.query.first()
 
-        assert cc.id == c.id
-        assert cc.name == c.name
-        assert cc.last_name == c.last_name
-        assert cc.address == c.address
-        assert cc.zip_code == c.zip_code
-        assert cc.home_phone == c.home_phone
-        assert cc.work_phone == c.work_phone
-        assert cc.email == c.email
-        assert cc.active == c.active
-        assert cc.verified_on == c.verified_on
-        assert cc.added_on == c.added_on
-        assert cc.note == c.note
-        assert cc.created_at == c.created_at
-        assert cc.updated_at == c.updated_at
-        assert cc.cached_tag_list == c.cached_tag_list
-        assert cc.mobile_phone == c.mobile_phone
+        assert_contacts_equal(c, cc)
+
+    def test_list_no_tags(self):
+        c = fake_contact()
+        c2 = fake_contact()
+        while c.zip_code == c2.zip_code:
+            c2 = fake_contact()
+
+        db.session.add(c)
+        db.session.add(c2)
+        db.session.commit()
+
+        contacts = Contact.list()
+        contacts_by_zip = { c.zip_code : c for c in contacts }
+
+        assert_contacts_equal(c, contacts_by_zip[c.zip_code])
+        assert_contacts_equal(c2, contacts_by_zip[c2.zip_code])
 
 
 
-    def __repr__(self):
-        return '<Contact %r>' % self.name
 
-    def list(*tags):
-        pass

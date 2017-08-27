@@ -23,4 +23,28 @@ class ContactsTest(TestCase):
 
     def test_insert(self):
         print "TODO: Insert!"
-        assert False
+        c = Contact(name="First")
+        c.name = "First!"
+        c.last_name = "Last"
+        c.address = "Some house"
+        c.zip_code = "12345"
+        c.home_phone = "555-555-1234"
+        c.work_phone = "555-555-5555"
+        c.email = "name@host.com"
+        c.active = True
+        # c.verified_on = db.Column(db.Date)
+        # c.added_on = db.Column(db.Date)
+        c.note = "This is a note."
+        # c.created_at = db.Column(db.DateTime)
+        # c.updated_at = db.Column(db.DateTime)
+        # c.cached_tag_list = db.Column(db.Text)
+        c.mobile_phone = "555-555-632"
+
+        db.session.add(c)
+        db.session.commit()
+
+    def __repr__(self):
+        return '<Contact %r>' % self.name
+
+    def list(*tags):
+        pass

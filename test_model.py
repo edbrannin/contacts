@@ -3,6 +3,31 @@ from flask_testing import TestCase
 
 from model import *
 
+from faker import Faker
+fake = Faker()
+
+def fake_contacts(count):
+    return [fake_contact() for c in range(count)]
+
+def fake_contact():
+    c = Contact()
+    c.name = fake.name()
+    c.last_name = c.name.split(' ')[-1]
+    c.address = fake.address()
+    c.zip_code = fake.zipcode()
+    c.home_phone = fake.phone_number()
+    c.work_phone = fake.phone_number()
+    c.email = fake.safe_email()
+    c.active = True
+    c.verified_on = fake.past_date(start_date="-30d")
+    c.added_on = fake.past_date(start_date=c.verified_on)
+    c.note = fake.text()
+    c.created_at = c.added_on
+    c.updated_at = c.verified_on
+    # c.cached_tag_list = db.Column(db.Text)
+    c.mobile_phone = "555-555-632"
+    return c
+
 class ContactsTest(TestCase):
 
     SQLALCHEMY_DATABASE_URI = "sqlite://"
@@ -22,23 +47,7 @@ class ContactsTest(TestCase):
         db.drop_all()
 
     def test_insert(self):
-        print "TODO: Insert!"
-        c = Contact(name="First")
-        c.name = "First!"
-        c.last_name = "Last"
-        c.address = "Some house"
-        c.zip_code = "12345"
-        c.home_phone = "555-555-1234"
-        c.work_phone = "555-555-5555"
-        c.email = "name@host.com"
-        c.active = True
-        # c.verified_on = db.Column(db.Date)
-        # c.added_on = db.Column(db.Date)
-        c.note = "This is a note."
-        # c.created_at = db.Column(db.DateTime)
-        # c.updated_at = db.Column(db.DateTime)
-        # c.cached_tag_list = db.Column(db.Text)
-        c.mobile_phone = "555-555-632"
+        c = fake_contact()
 
         db.session.add(c)
         db.session.commit()

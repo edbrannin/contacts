@@ -2,14 +2,17 @@ import pprint
 import hashlib
 
 from flask import *
-from flask_sqlalchemy import SQLAlchemy
 from flask_oauthlib.client import OAuth, OAuthException
+
+from model import db, Contact
 
 app = Flask(__name__)
 # app.config.from_object('yourapplication.default_settings')
 app.config.from_envvar('SIM_CONTACTS_SETTINGS')
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://db/dev.sqlite3'
-db = SQLAlchemy(app)
+
+db.init_app(app)
+
 
 oauth = OAuth()
 
@@ -68,3 +71,6 @@ def home():
     return render_template('home.html.j2')
 
 app.secret_key = app.config.get('SECRET_KEY', "DEV TESTING")
+
+
+

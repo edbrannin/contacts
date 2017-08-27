@@ -43,6 +43,27 @@ class ContactsTest(TestCase):
         db.session.add(c)
         db.session.commit()
 
+        cc = Contact.query.first()
+
+        assert cc.id == c.id
+        assert cc.name == c.name
+        assert cc.last_name == c.last_name
+        assert cc.address == c.address
+        assert cc.zip_code == c.zip_code
+        assert cc.home_phone == c.home_phone
+        assert cc.work_phone == c.work_phone
+        assert cc.email == c.email
+        assert cc.active == c.active
+        assert cc.verified_on == c.verified_on
+        assert cc.added_on == c.added_on
+        assert cc.note == c.note
+        assert cc.created_at == c.created_at
+        assert cc.updated_at == c.updated_at
+        assert cc.cached_tag_list == c.cached_tag_list
+        assert cc.mobile_phone == c.mobile_phone
+
+
+
     def __repr__(self):
         return '<Contact %r>' % self.name
 

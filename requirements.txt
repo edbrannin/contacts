@@ -4,4 +4,3 @@ reportlab
 Flask-SQLAlchemy
 Flask-Testing
 
-nose

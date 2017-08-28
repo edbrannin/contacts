@@ -64,7 +64,9 @@ class Contact(db.Model):
             # backref='taggable',
             # secondaryjoin=Tagging.taggable_type=="Contact")
             )
-    tags = association_proxy("taggings", "tag", creator=Tag.named)
+    tags = association_proxy("taggings", "tag"
+            #, creator=Tag.named
+            )
 
 
     def __repr__(self):
@@ -76,4 +78,8 @@ class Contact(db.Model):
 
     def add_tag(self, tag_name):
         tag = Tag.named(tag_name)
-        self.tags.append(tag)
+        tagging = Tagging()
+        tagging.taggable = self
+        tagging.tag = tag
+        # self.tags.append(tag)
+        self.taggings.append(tagging)

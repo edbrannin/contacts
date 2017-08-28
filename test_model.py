@@ -102,10 +102,19 @@ class ContactsTest(TestCase):
     def test_tags(self):
         c = fake_contact()
         c2 = fake_contact()
+        print c.name
         for tag in c.tags:
             print tag
+        print c2.name
         for tag in c2.tags:
             print tag
-
+        db.session.add(c)
+        db.session.add(c2)
+        db.session.commit()
+        print "Loading contacts"
+        for contact in Contact.list():
+            print contact.name
+            for tag in contact.tags:
+                print tag
 
 

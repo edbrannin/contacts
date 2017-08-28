@@ -46,6 +46,8 @@ def fake_contact():
     c.updated_at = c.verified_on
     # TODO Tags fake.random_sample_unique(TEST_TAGS)
     # c.cached_tag_list = db.Column(db.Text)
+    for tag in fake.random_sample_unique(TEST_TAGS, length=3):
+        c.add_tag(tag)
     c.mobile_phone = "555-555-632"
     return c
 
@@ -97,6 +99,13 @@ class ContactsTest(TestCase):
         assert_contacts_equal(c, contacts_by_zip[c.zip_code])
         assert_contacts_equal(c2, contacts_by_zip[c2.zip_code])
 
+    def test_tags(self):
+        c = fake_contact()
+        c2 = fake_contact()
+        for tag in c.tags:
+            print tag
+        for tag in c2.tags:
+            print tag
 
 
 

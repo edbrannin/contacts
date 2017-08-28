@@ -15,6 +15,18 @@ class Tag(db.Model):
             )
     taggables = association_proxy("taggings", "taggable")
 
+    @classmethod
+    def named(cls, name):
+        if isinstance(name, Tag):
+            # Sometimes we get a Tag instead of a String.  huh.
+            return name
+        tag = cls.query.filter_by(name=name).first()
+        if not tag:
+            tag = Tag(name=name)
+        return tag
+
+    def __str__(self):
+        return "Tag<{}>".format(self.name)
 
 class Tagging(db.Model):
     __tablename__ = "taggings"
@@ -22,10 +34,11 @@ class Tagging(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'))
     taggable_id = db.Column(db.Integer, db.ForeignKey('contacts.id'))
-    taggable_type = db.Column(db.String(255))
+    taggable_type = db.Column(db.String(255), default="Contact")
     created_at = db.Column(db.DateTime)
 
     tag = db.relationship(Tag, lazy='joined')
+    taggable = db.relationship("Contact", lazy='joined')
 
 class Contact(db.Model):
     __tablename__ = "contacts"
@@ -47,10 +60,11 @@ class Contact(db.Model):
     cached_tag_list = db.Column(db.Text)
     mobile_phone = db.Column(db.String(255))
 
-    taggings = db.relationship("Tagging", cascade="all, delete-orphan", backref='taggable',
+    taggings = db.relationship("Tagging", cascade="all, delete-orphan",
+            # backref='taggable',
             # secondaryjoin=Tagging.taggable_type=="Contact")
             )
-    tags = association_proxy("taggings", "tag")
+    tags = association_proxy("taggings", "tag", creator=Tag.named)
 
 
     def __repr__(self):
@@ -60,3 +74,6 @@ class Contact(db.Model):
     def list(cls, *tags):
         return cls.query.all()
 
+    def add_tag(self, tag_name):
+        tag = Tag.named(tag_name)
+        self.tags.append(tag)

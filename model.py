@@ -1,10 +1,35 @@
+from sqlalchemy.ext.associationproxy import association_proxy
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
 
+class Tag(db.Model):
+    __tablename__ = "tags"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255))
+    taggings = db.relationship("Tagging", cascade="all, delete-orphan",
+            # backref='taggable',
+            # #secondaryjoin=Tagging.c.taggable_type=="Contact")
+            )
+    taggables = association_proxy("taggings", "taggable")
+
+
+class Tagging(db.Model):
+    __tablename__ = "taggings"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'))
+    taggable_id = db.Column(db.Integer, db.ForeignKey('contacts.id'))
+    taggable_type = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime)
+
+    tag = db.relationship(Tag, lazy='joined')
 
 class Contact(db.Model):
+    __tablename__ = "contacts"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255))
     last_name = db.Column(db.String(255), index=True)
@@ -21,6 +46,12 @@ class Contact(db.Model):
     updated_at = db.Column(db.DateTime)
     cached_tag_list = db.Column(db.Text)
     mobile_phone = db.Column(db.String(255))
+
+    taggings = db.relationship("Tagging", cascade="all, delete-orphan", backref='taggable',
+            # secondaryjoin=Tagging.taggable_type=="Contact")
+            )
+    tags = association_proxy("taggings", "tag")
+
 
     def __repr__(self):
         return '<Contact %r>' % self.name

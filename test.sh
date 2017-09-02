@@ -1,11 +1,13 @@
 #!/bin/bash
 
 if [[ "$VIRTUAL_ENV" == "" ]]; then
+  if [ ! -d .env ]; then
     virtualenv .env
-    . env/bin/activate
+  fi
+  . env/bin/activate
 fi
 
-pip install -r requirements-dev.txt
+pip install -qr requirements-dev.txt
 
-nosetests
+python -m pytest
 

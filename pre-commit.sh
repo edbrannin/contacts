@@ -1,3 +1,5 @@
+set -e
+
 VIRTUAL_ENV=/Users/ed/dev/contacts-python/.env
 
 if [[ "$VIRTUAL_ENV" == "" ]]; then
@@ -6,5 +8,5 @@ if [[ "$VIRTUAL_ENV" == "" ]]; then
   fi
   . .env/bin/activate
 fi
-pip install -r requirements-dev.txt
+pip install -qr requirements-dev.txt
 python -m pytest

@@ -1,6 +1,10 @@
 -r requirements.txt
 
 # Testing
-nose
 faker
+pytest
+pytest-flask
 
+# Possibly going to remove?
+nose
+Flask-Testing

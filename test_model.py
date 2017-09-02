@@ -1,5 +1,6 @@
+import pytest
+
 from flask import Flask
-from flask_testing import TestCase
 
 from model import *
 
@@ -56,98 +57,99 @@ TEST_TAGS = list(set(
     [fake.color_name() for x in range(25)]
     ))
 
-class ContactsTest(TestCase):
 
-    SQLALCHEMY_DATABASE_URI = "sqlite://"
-    TESTING = True
+@pytest.fixture
+def app(autorun=True, scope="module"):
+    # pass in test configuration
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    db.init_app(app)
+    return app
 
-    def create_app(self):
-        # pass in test configuration
-        app = Flask(__name__)
-        db.init_app(app)
-        return app
-
-    def setUp(self):
-        db.create_all()
-
-    def tearDown(self):
+@pytest.fixture(autouse=True)
+def db_tables(app):
+    db.create_all()
+    try:
+        yield
+    finally:
         db.session.remove()
         db.drop_all()
 
-    def test_insert(self):
-        c = fake_contact()
+def test_insert():
+    c = fake_contact()
 
-        db.session.add(c)
-        db.session.commit()
+    db.session.add(c)
+    db.session.commit()
 
-        cc = Contact.query.first()
+    cc = Contact.query.first()
 
-        assert_contacts_equal(c, cc)
+    assert_contacts_equal(c, cc)
 
-    def test_list_no_tags(self):
-        c = fake_contact()
+def test_list_no_tags():
+    c = fake_contact()
+    c2 = fake_contact()
+    while c.zip_code == c2.zip_code:
         c2 = fake_contact()
-        while c.zip_code == c2.zip_code:
-            c2 = fake_contact()
 
-        db.session.add(c)
-        db.session.add(c2)
-        db.session.commit()
+    db.session.add(c)
+    db.session.add(c2)
+    db.session.commit()
 
-        contacts = Contact.list()
-        contacts_by_zip = { c.zip_code : c for c in contacts }
+    contacts = Contact.list()
+    contacts_by_zip = { c.zip_code : c for c in contacts }
 
-        assert_contacts_equal(c, contacts_by_zip[c.zip_code])
-        assert_contacts_equal(c2, contacts_by_zip[c2.zip_code])
+    assert_contacts_equal(c, contacts_by_zip[c.zip_code])
+    assert_contacts_equal(c2, contacts_by_zip[c2.zip_code])
 
-    def test_tags(self):
-        c = fake_contact()
-        c2 = fake_contact()
-        print c.name
-        for tag in c.tags:
+def test_tags():
+    c = fake_contact()
+    c2 = fake_contact()
+    print c.name
+    for tag in c.tags:
+        print tag
+    print c2.name
+    for tag in c2.tags:
+        print tag
+    db.session.add(c)
+    db.session.add(c2)
+    db.session.commit()
+    print "Loading contacts"
+    for contact in Contact.list():
+        print contact.name
+        for tag in contact.tags:
             print tag
-        print c2.name
-        for tag in c2.tags:
-            print tag
-        db.session.add(c)
-        db.session.add(c2)
-        db.session.commit()
-        print "Loading contacts"
-        for contact in Contact.list():
-            print contact.name
-            for tag in contact.tags:
-                print tag
 
-    def test_select_one_tag(self):
-        contacts = fake_contacts(5)
-        c = contacts[0]
-        c3 = contacts[1]
-        c.add_tag("TEST1")
-        c.add_tag("TEST3")
-        c3.add_tag("TEST3")
-        db.session.commit()
+def test_select_one_tag():
+    contacts = fake_contacts(5)
+    c = contacts[0]
+    c3 = contacts[1]
+    c.add_tag("TEST1")
+    c.add_tag("TEST3")
+    c3.add_tag("TEST3")
+    db.session.commit()
 
-        test1 = Contact.list("TEST1")
-        assert len(test1) == 1
-        assert test1[0] == c
+    test1 = Contact.list("TEST1")
+    assert len(test1) == 1
+    assert test1[0] == c
 
-        test3 = Contact.list("TEST3")
-        assert len(test3) == 2
-        assert c in test3
-        assert c3 in test3
+    test3 = Contact.list("TEST3")
+    assert len(test3) == 2
+    assert c in test3
+    assert c3 in test3
 
-    def test_select_two_tags(self):
-        contacts = fake_contacts(5)
-        c = contacts[0]
-        c3 = contacts[1]
-        c.add_tag("TEST1")
-        c.add_tag("TEST3")
-        c3.add_tag("TEST3")
-        contacts[2].add_tag("TEST2")
-        contacts[1].add_tag("TEST2")
-        db.session.commit()
+def test_select_two_tags():
+    contacts = fake_contacts(5)
+    c = contacts[0]
+    c3 = contacts[1]
+    c.add_tag("TEST1")
+    c.add_tag("TEST3")
+    c3.add_tag("TEST3")
+    contacts[2].add_tag("TEST2")
+    contacts[1].add_tag("TEST2")
+    db.session.commit()
 
-        test23 = Contact.list("TEST2", "TEST3")
-        assert len(test23) == 1
-        assert test23[0] == c3
+    test23 = Contact.list("TEST2", "TEST3")
+    assert len(test23) == 1
+    assert test23[0] == c3
 

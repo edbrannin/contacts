@@ -49,6 +49,7 @@ def fake_contact():
     for tag in fake.random_sample_unique(TEST_TAGS, length=3):
         c.add_tag(tag)
     c.mobile_phone = "555-555-632"
+    db.session.add(c)
     return c
 
 TEST_TAGS = list(set(
@@ -117,4 +118,21 @@ class ContactsTest(TestCase):
             for tag in contact.tags:
                 print tag
 
+    def test_select_one_tag(self):
+        contacts = fake_contacts(5)
+        c = contacts[0]
+        c3 = contacts[1]
+        c.add_tag("TEST1")
+        c.add_tag("TEST3")
+        c3.add_tag("TEST3")
+        db.session.commit()
+
+        test1 = Contact.list("TEST1")
+        assert len(test1) == 1
+        assert test1[0] == c
+
+        test3 = Contact.list("TEST3")
+        assert len(test3) == 2
+        assert c in test3
+        assert c3 in test3
 

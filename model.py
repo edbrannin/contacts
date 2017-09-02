@@ -74,7 +74,11 @@ class Contact(db.Model):
 
     @classmethod
     def list(cls, *tags):
-        return cls.query.all()
+        q = cls.query
+        for tag in tags:
+            q = q.filter(Contact.tags.any(Tag.name == tag))
+            break
+        return q.all()
 
     def add_tag(self, tag_name):
         tag = Tag.named(tag_name)

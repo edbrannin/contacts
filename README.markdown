@@ -27,13 +27,23 @@ Also:
 
 ## Roadmap
 
+### Model
+
+* [x] Add a person
+* [x] Select all people
+* [x] Select all people with one tag
+* [x] ...with any number of tags
+* [ ] Edit a person's details
+* [ ] (Soft?) delete a person
+* [ ] Sort by columns (last name, zip code, etc)
+
 ### API
 
 * [x] Facebook auth
     * [ ] Block unathorized access
     * [ ] ... accepting only pre-configured accounts
 * [ ] Add a person
-* [x] Select all people
+* [ ] Select all people
 * [ ] Select all people with one tag
 * [ ] ...with any number of tags
 * [ ] Edit a person's details

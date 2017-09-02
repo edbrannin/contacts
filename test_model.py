@@ -136,3 +136,18 @@ class ContactsTest(TestCase):
         assert c in test3
         assert c3 in test3
 
+    def test_select_two_tags(self):
+        contacts = fake_contacts(5)
+        c = contacts[0]
+        c3 = contacts[1]
+        c.add_tag("TEST1")
+        c.add_tag("TEST3")
+        c3.add_tag("TEST3")
+        contacts[2].add_tag("TEST2")
+        contacts[1].add_tag("TEST2")
+        db.session.commit()
+
+        test23 = Contact.list("TEST2", "TEST3")
+        assert len(test23) == 1
+        assert test23[0] == c3
+

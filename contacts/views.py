@@ -14,5 +14,7 @@ def home():
 def home_secure():
     return render_template('home.html.j2')
 
-def list(*tags):
-    return pprint.pformat(Tags)
+@app.route('/contacts')
+def list():
+    tags = request.get('tags')
+    return pprint.pformat(tags)

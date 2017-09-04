@@ -8,6 +8,8 @@ app.config.from_pyfile('config.py')
 
 
 app.secret_key = app.config.get('SECRET_KEY', "DEV TESTING")
+if app.secret_key == "DEV TESTING":
+    print "WARNING: Set a secret key!!!"
 
 
 

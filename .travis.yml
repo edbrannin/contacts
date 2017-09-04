@@ -1,5 +1,7 @@
 language: python
-script: ./test.sh
+script:
+    - touch instance/config.py
+    - ./test.sh
 matrix:
   include:
   - python: "2.7"

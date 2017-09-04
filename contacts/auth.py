@@ -65,7 +65,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         g.setdefault('user')
-        if session['me'] and not g.user:
+        if 'me' in session and session['me'] and not g.user:
             # Legacy login, TODO remove
             g.user = session['me']
         if g.user is None:

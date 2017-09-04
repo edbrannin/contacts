@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/edbrannin/contacts.svg?branch=master)](https://travis-ci.org/edbrannin/contacts)
+
 ## Requirements
 
 Ted says:

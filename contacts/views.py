@@ -1,7 +1,6 @@
 import pprint
 
 from flask import *
-from flask_login import LoginManager
 
 from . import app
 from .auth import facebook

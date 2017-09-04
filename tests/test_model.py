@@ -2,7 +2,7 @@ import pytest
 
 from flask import Flask
 
-from ..model import *
+from contacts.model import *
 
 from faker import Faker
 fake = Faker()

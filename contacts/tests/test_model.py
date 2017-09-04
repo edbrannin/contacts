@@ -29,7 +29,6 @@ def assert_contacts_equal(expected_contact, observed_contact):
     assert expected_contact.mobile_phone == observed_contact.mobile_phone
 
 
-
 def fake_contact():
     c = Contact()
     c.name = fake.name()

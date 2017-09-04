@@ -1,8 +1,12 @@
 from sqlalchemy.ext.associationproxy import association_proxy
 from flask_sqlalchemy import SQLAlchemy
+from . import app
 
 db = SQLAlchemy()
 
+
+
+db.init_app(app)
 
 class Tag(db.Model):
     __tablename__ = "tags"

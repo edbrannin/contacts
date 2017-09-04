@@ -1,5 +1,6 @@
 language: python
 script:
+    - mkdir instance
     - touch instance/config.py
     - ./test.sh
 matrix:

@@ -18,3 +18,4 @@ def home_secure():
 def list():
     tags = request.get('tags')
     return pprint.pformat(tags)
+

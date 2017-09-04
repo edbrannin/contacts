@@ -6,7 +6,6 @@ from flask_oauthlib.client import OAuth, OAuthException
 from flask import *
 
 from . import app
-from .model import Contact
 
 oauth = OAuth()
 
@@ -50,6 +49,7 @@ def oauth_authorized():
     pprint.pprint(session)
     me = facebook.get('/me/?fields=email,name,id,picture.height(50).width(50),first_name,last_name')
     g.user = me.data
+    session['me'] = me.data
     try:
         session['picture_url'] = me.data['picture']['data']['url']
     except KeyError:
@@ -64,11 +64,14 @@ def oauth_authorized():
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        print "Checking for a login..."
         g.setdefault('user')
         if 'me' in session and session['me'] and not g.user:
             # Legacy login, TODO remove
             g.user = session['me']
         if g.user is None:
+            print "No login."
             return redirect(url_for('login', next=request.url))
+        print "Login OK"
         return f(*args, **kwargs)
     return decorated_function

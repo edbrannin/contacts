@@ -4,7 +4,7 @@
 
 <a href="{{ url_for('login') }}">Log in</a>
 
-{% if 'me' in session %}
+{% if 'me' in session or g.user %}
 <h2>Session</h2>
 Here's what Facebook told us:
 <dl>

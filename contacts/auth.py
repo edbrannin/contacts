@@ -1,7 +1,9 @@
+from functools import wraps
 import pprint
 import hashlib
 
 from flask_oauthlib.client import OAuth, OAuthException
+from flask import *
 
 from . import app
 from .model import Contact
@@ -47,7 +49,7 @@ def oauth_authorized():
     session['oauth_token'] = (resp['access_token'], '')
     pprint.pprint(session)
     me = facebook.get('/me/?fields=email,name,id,picture.height(50).width(50),first_name,last_name')
-    session['me'] = me.data
+    g.user = me.data
     try:
         session['picture_url'] = me.data['picture']['data']['url']
     except KeyError:
@@ -59,3 +61,14 @@ def oauth_authorized():
     flash('You were signed in as {} ({})'.format(me.data['name'], me.data['id']))
     return redirect(next_url)
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        g.setdefault('user')
+        if session['me'] and not g.user:
+            # Legacy login, TODO remove
+            g.user = session['me']
+        if g.user is None:
+            return redirect(url_for('login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function

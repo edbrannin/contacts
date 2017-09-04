@@ -8,9 +8,9 @@
 <h2>Session</h2>
 Here's what Facebook told us:
 <dl>
-{% for key in session['me'] %}
+{% for key in g.user %}
 <dt>{{key | e}}</dt>
-<dd>{{session['me'][key] | e}}</dd>
+<dd>{{g.user[key] | e}}</dd>
 {% endfor %}
 </dl>
 {% endif %}

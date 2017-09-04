@@ -1,18 +1,10 @@
 import pprint
 import hashlib
 
-from flask import *
 from flask_oauthlib.client import OAuth, OAuthException
 
-from model import db, Contact
-
-app = Flask(__name__)
-# app.config.from_object('yourapplication.default_settings')
-app.config.from_envvar('SIM_CONTACTS_SETTINGS')
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://db/dev.sqlite3'
-
-db.init_app(app)
-
+from . import app
+from .model import Contact
 
 oauth = OAuth()
 
@@ -31,6 +23,7 @@ facebook = oauth.remote_app('facebook',
 @facebook.tokengetter
 def get_facebook_token(token=None):
     return session.get('oauth_token')
+
 
 @app.route('/login')
 def login():
@@ -65,12 +58,4 @@ def oauth_authorized():
         me.data['id'], me.data['name'], request.args.get('next'))
     flash('You were signed in as {} ({})'.format(me.data['name'], me.data['id']))
     return redirect(next_url)
-
-@app.route('/')
-def home():
-    return render_template('home.html.j2')
-
-app.secret_key = app.config.get('SECRET_KEY', "DEV TESTING")
-
-
 

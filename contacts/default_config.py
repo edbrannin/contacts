@@ -1,0 +1,6 @@
+SQLALCHEMY_DATABASE_URI = "sqlite://db/dev.sqlite3"
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+DEBUG = False
+SQLALCHEMY_ECHO = False

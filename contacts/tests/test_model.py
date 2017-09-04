@@ -2,7 +2,7 @@ import pytest
 
 from flask import Flask
 
-from model import *
+from ..model import *
 
 from faker import Faker
 fake = Faker()
@@ -27,7 +27,6 @@ def assert_contacts_equal(expected_contact, observed_contact):
     assert expected_contact.updated_at == observed_contact.updated_at
     assert expected_contact.cached_tag_list == observed_contact.cached_tag_list
     assert expected_contact.mobile_phone == observed_contact.mobile_phone
-
 
 
 def fake_contact():

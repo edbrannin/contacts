@@ -1,4 +1,5 @@
 language: python
+cache: pip
 script:
     - mkdir instance
     - touch instance/config.py

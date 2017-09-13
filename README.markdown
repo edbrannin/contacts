@@ -44,6 +44,7 @@ Also:
 * [x] Facebook auth
     * [ ] Block unathorized access
     * [ ] ... accepting only pre-configured accounts
+    * [ ] Log out
 * [ ] Add a person
 * [ ] Select all people
 * [ ] Select all people with one tag
@@ -58,6 +59,7 @@ Also:
 * [x] Facebook auth
     * [ ] Block unathorized access
     * [ ] ... accepting only pre-configured accounts
+    * [ ] Log out
 * [ ] Add a person
 * [ ] Select all people
 * [ ] Select all people with one tag
@@ -66,3 +68,9 @@ Also:
 * [ ] (Soft?) delete a person
 * [ ] Sort by columns (last name, zip code, etc)
 * [ ] Generate a PDF of mailing labels for a given set of people
+
+### Future
+
+* DB-configurable user whitelist
+* Event-log-driven data migration
+

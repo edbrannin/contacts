@@ -4,11 +4,14 @@ from . import app
 
 db = SQLAlchemy()
 
+class AsDict(object):
+   def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 db.init_app(app)
 
-class Tag(db.Model):
+class Tag(db.Model, AsDict):
     __tablename__ = "tags"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -44,7 +47,7 @@ class Tagging(db.Model):
     tag = db.relationship(Tag, lazy='joined')
     taggable = db.relationship("Contact", lazy='joined')
 
-class Contact(db.Model):
+class Contact(db.Model, AsDict):
     __tablename__ = "contacts"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

@@ -46,9 +46,9 @@ Also:
     * [ ] ... accepting only pre-configured accounts
     * [ ] Log out
 * [ ] Add a person
-* [ ] Select all people
-* [ ] Select all people with one tag
-* [ ] ...with any number of tags
+* [x] Select all people
+* [x] Select all people with one tag
+* [x] ...with any number of tags
 * [ ] Edit a person's details
 * [ ] (Soft?) delete a person
 * [ ] Sort by columns (last name, zip code, etc)
@@ -61,7 +61,7 @@ Also:
     * [ ] ... accepting only pre-configured accounts
     * [ ] Log out
 * [ ] Add a person
-* [ ] Select all people
+* [x] Select all people
 * [ ] Select all people with one tag
 * [ ] ...with any number of tags
 * [ ] Edit a person's details

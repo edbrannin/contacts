@@ -10,12 +10,14 @@ api = Blueprint('api', __name__)
 @api.route('/tags')
 @login_required
 def all_tags():
-    answer = [tag.as_dict() for tag in Tag.query.all()]
+    answer = [
+            dict(
+                href=url_for('api.show_tag', tag_id=tag.id),
+                **tag.as_dict()
+                )
+            for tag in Tag.query.all()
+            ]
     return jsonify(answer)
-
-@api.route('/')
-def home():
-    return render_template('home.html.j2')
 
 @api.route('/tags/<tag_id>')
 @login_required
@@ -26,7 +28,12 @@ def show_tag(tag_id):
     return jsonify(dict(tag=tag.as_dict(), people=people))
 
 @api.route('/contacts')
+@login_required
 def list_contacts():
-    tags = request.get('tags')
-    return pprint.pformat(tags)
+    tags = request.args.getlist('tag')
+    answer = [
+            contact.as_dict()
+            for contact in Contact.list(*tags)
+            ]
+    return jsonify(answer)
 

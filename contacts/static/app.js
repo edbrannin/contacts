@@ -23,10 +23,11 @@ Vue.component('contacts', {
               <td class="email">{{ person.email }}</td>
               <td class="zip">{{ person.zip }}</td>
               <td class="last_name">{{ person.last_name }}</td>
-              <td class="show_note"><button text="Show Note"></button>
+              <td class="show_note"><button text="Show Note"></button></td>
             </tr>
-            <tr v-if="person.note and person.show_note">
-              <td class="person note" colspan="5">{{person.note}}
+            <tr v-if="person.note && person.show_note" class="person">
+              <td></td>
+              <td class="person note" colspan="4">{{person.note}}</td>
             </tr>
           </template>
         </tbody>
@@ -46,6 +47,9 @@ Vue.component('contacts', {
             console.log("Got contacts:", response, response.body);
             // get body data
             this.people = response.body;
+            this.people.forEach(function(item, index, array) {
+              item.showNote = true;
+            });
         }, response => {
             console.log("Error getting contacts:", response, response.body);
             this.error = response.body;

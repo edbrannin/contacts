@@ -20,6 +20,15 @@ facebook = oauth.remote_app('facebook',
     request_token_params={'scope': 'email'}
 )
 
+@app.context_processor
+def context():
+    logged_in = False
+    try:
+        logged_in = 'me' in session or g.user
+    except:
+        pass
+    return dict(logged_in=logged_in)
+
 # https://flask-oauthlib.readthedocs.io/en/latest/client.html#signing-in-authorizing
 @facebook.tokengetter
 def get_facebook_token(token=None):

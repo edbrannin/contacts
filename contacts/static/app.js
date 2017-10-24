@@ -48,7 +48,7 @@ Vue.component('contacts', {
             // get body data
             this.people = response.body;
             this.people.forEach(function(item, index, array) {
-              item.showNote = true;
+              item.show_note = true;
             });
         }, response => {
             console.log("Error getting contacts:", response, response.body);

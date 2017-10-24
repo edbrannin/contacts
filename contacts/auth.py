@@ -1,6 +1,7 @@
 from functools import wraps
 import pprint
 import hashlib
+import time
 
 from flask_oauthlib.client import OAuth, OAuthException
 from flask import *
@@ -27,7 +28,8 @@ def context():
         logged_in = 'me' in session or g.user
     except:
         pass
-    return dict(logged_in=logged_in)
+
+    return dict(logged_in=logged_in, timestamp=time.time())
 
 # https://flask-oauthlib.readthedocs.io/en/latest/client.html#signing-in-authorizing
 @facebook.tokengetter
@@ -40,6 +42,15 @@ def login():
     return facebook.authorize(callback=url_for('oauth_authorized',
         next=request.args.get('next') or request.referrer or None,
         _external=True))
+
+
+@app.route('/logout')
+def logout():
+    if 'user' in g:
+        del g.user
+    if 'me' in session:
+        del session['me']
+    return redirect('/')
 
 
 @app.route('/oauth-authorized')

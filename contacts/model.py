@@ -89,6 +89,11 @@ class Contact(db.Model, AsDict):
             q = q.filter(Contact.tags.any(Tag.name == tag))
         return q.all()
 
+    @classmethod
+    def get_by_id(cls, id):
+        q = cls.query.filter(Contact.id == id)
+        return q.one()
+
     def add_tag(self, tag_name):
         tag = Tag.named(tag_name)
         tagging = Tagging()

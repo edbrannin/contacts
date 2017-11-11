@@ -78,7 +78,6 @@ def db_tables(app):
 
 def test_update():
     c = fake_contact()
-    db.session.add(c)
     db.session.commit()
 
     updated_at = c.updated_at
@@ -100,8 +99,6 @@ def test_update():
 
 def test_insert():
     c = fake_contact()
-
-    db.session.add(c)
     db.session.commit()
 
     cc = Contact.query.first()
@@ -114,7 +111,6 @@ def test_list_no_tags():
     while c.zip_code == c2.zip_code:
         c2 = fake_contact()
 
-    db.session.add(c)
     db.session.add(c2)
     db.session.commit()
 
@@ -133,8 +129,6 @@ def test_tags():
     print c2.name
     for tag in c2.tags:
         print tag
-    db.session.add(c)
-    db.session.add(c2)
     db.session.commit()
     print "Loading contacts"
     for contact in Contact.list():
@@ -175,3 +169,11 @@ def test_select_two_tags():
     assert len(test23) == 1
     assert test23[0] == c3
 
+def test_get_by_id():
+    contacts = fake_contacts(5)
+    db.session.commit()
+
+    for c in contacts:
+        cc = Contact.get_by_id(c.id)
+
+        assert_contacts_equal(c, cc)

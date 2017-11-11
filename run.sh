@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ ! -f .env/bin/activate ]; then
     virtualenv .env
 fi

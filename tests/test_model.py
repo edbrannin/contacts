@@ -83,7 +83,7 @@ def test_update():
 
     updated_at = c.updated_at
 
-    time.sleep(0.1)
+    time.sleep(0.01)
 
     cc = Contact.query.first()
     new_last_name = c.last_name + " KING UNDER THE MOUNTAIN"

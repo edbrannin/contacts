@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy.ext.associationproxy import association_proxy
 from flask_sqlalchemy import SQLAlchemy
 from . import app
@@ -62,8 +64,8 @@ class Contact(db.Model, AsDict):
     verified_on = db.Column(db.Date)
     added_on = db.Column(db.Date)
     note = db.Column(db.Text)
-    created_at = db.Column(db.DateTime)
-    updated_at = db.Column(db.DateTime)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now)
     cached_tag_list = db.Column(db.Text)
     mobile_phone = db.Column(db.String(255))
 

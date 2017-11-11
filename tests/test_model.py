@@ -1,10 +1,11 @@
-import pytest
+import time
 
+import pytest
 from flask import Flask
+from faker import Faker
 
 from contacts.model import *
 
-from faker import Faker
 fake = Faker()
 
 def fake_contacts(count):
@@ -80,6 +81,10 @@ def test_update():
     db.session.add(c)
     db.session.commit()
 
+    updated_at = c.updated_at
+
+    time.sleep(0.1)
+
     cc = Contact.query.first()
     new_last_name = c.last_name + " KING UNDER THE MOUNTAIN"
     cc.last_name = new_last_name
@@ -90,6 +95,8 @@ def test_update():
     assert count == 1
     ccc = Contact.query.first()
     assert ccc.last_name == new_last_name
+    assert ccc.created_at == c.created_at
+    assert ccc.updated_at > updated_at
 
 def test_insert():
     c = fake_contact()

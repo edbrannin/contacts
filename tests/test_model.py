@@ -75,6 +75,22 @@ def db_tables(app):
         db.session.remove()
         db.drop_all()
 
+def test_update():
+    c = fake_contact()
+    db.session.add(c)
+    db.session.commit()
+
+    cc = Contact.query.first()
+    new_last_name = c.last_name + " KING UNDER THE MOUNTAIN"
+    cc.last_name = new_last_name
+    db.session.add(cc)
+    db.session.commit()
+
+    count = Contact.query.count()
+    assert count == 1
+    ccc = Contact.query.first()
+    assert ccc.last_name == new_last_name
+
 def test_insert():
     c = fake_contact()
 

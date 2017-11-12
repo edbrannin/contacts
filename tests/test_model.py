@@ -175,5 +175,4 @@ def test_get_by_id():
 
     for c in contacts:
         cc = Contact.get_by_id(c.id)
-
         assert_contacts_equal(c, cc)

@@ -1,13 +1,13 @@
 import pprint
+from urlparse import urlparse, parse_qs
 
 import pytest
-
 from flask import Flask
+from faker import Faker
 
 from contacts.model import *
 from contacts import app as APP
 
-from faker import Faker
 fake = Faker()
 
 def fake_contacts(count):
@@ -86,11 +86,14 @@ def db_tables(app):
         db.session.remove()
         db.drop_all()
 
+def login(test_client, name='Test User'):
+    with test_client.session_transaction() as session:
+        session['me'] = "Test User"
+
+
 @pytest.mark.skip("Let's get the other test working first")
 def test_list_tags_1_contact(test_client):
     c = fake_contact()
-
-    db.session.add(c)
     db.session.commit()
 
     tag_names = [t.name for t in c.tags]
@@ -114,11 +117,16 @@ def test_list_tags_login_required_redirect(test_client):
     print rv.status
     print rv.data
     assert rv.status_code == 302
+    assert 'location' in rv.headers
+    parsed_url = urlparse(rv.headers['location'])
+    assert parsed_url.path == '/login'
+    next_url = urlparse(parse_qs(parsed_url.query)['next'][0])
+    assert next_url.path == '/api/tags'
+
 
 
 def test_list_tags_login_required_success(test_client):
-    with test_client.session_transaction() as session:
-        session['me'] = "Test User"
+    login(test_client)
 
     rv = test_client.get('/api/tags')
     print rv
@@ -129,3 +137,49 @@ def test_list_tags_login_required_success(test_client):
     assert rv.status_code == 200
     # No tags defined yet
     assert rv.json == []
+
+@pytest.mark.skip("TODO Implement")
+def test_get_contacts_tagged(test_client):
+    login(test_client)
+    c = fake_contact()
+    db.session.commit()
+
+    # rv = test_client.get('/api/contacts/{}'.format(c.id))
+
+def test_get_contact_need_login(test_client):
+    c = fake_contact()
+    db.session.commit()
+
+    rv = test_client.get('/api/contacts/{}'.format(c.id))
+    assert rv.status_code == 302
+    assert 'location' in rv.headers
+    parsed_url = urlparse(rv.headers['location'])
+    assert parsed_url.path == '/login'
+    next_url = urlparse(parse_qs(parsed_url.query)['next'][0])
+    assert next_url.path == '/api/contacts/{}'.format(c.id)
+
+
+def test_get_contact(test_client):
+    login(test_client)
+
+    c = fake_contact()
+    db.session.commit()
+
+    rv = test_client.get('/api/contacts/{}'.format(c.id))
+    assert rv.json['id'] == c.id
+    assert rv.json['name'] == c.name
+    assert rv.json['last_name'] == c.last_name
+    assert rv.json['address'] == c.address
+    assert rv.json['zip_code'] == c.zip_code
+    assert rv.json['home_phone'] == c.home_phone
+    assert rv.json['work_phone'] == c.work_phone
+    assert rv.json['email'] == c.email
+    assert rv.json['active'] == c.active
+    # assert rv.json['verified_on'] == c.verified_on
+    # assert rv.json['added_on'] == c.added_on
+    assert rv.json['note'] == c.note
+    # assert rv.json['created_at'] == c.created_at
+    # assert rv.json['updated_at'] == c.updated_at
+    assert rv.json['cached_tag_list'] == c.cached_tag_list
+    assert rv.json['mobile_phone'] == c.mobile_phone
+

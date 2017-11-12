@@ -37,3 +37,11 @@ def list_contacts():
             ]
     return jsonify(answer)
 
+@api.route('/contacts/<contact_id>')
+@login_required
+def get_contact(contact_id):
+    contact = Contact.get_by_id(contact_id)
+    answer = contact.as_dict()
+
+    return jsonify(answer)
+

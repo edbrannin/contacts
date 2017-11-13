@@ -45,3 +45,17 @@ def get_contact(contact_id):
 
     return jsonify(answer)
 
+@api.route('/contacts/<contact_id>', methods=['PUT'])
+@login_required
+def put_contact(contact_id):
+    contact = Contact.get_by_id(contact_id)
+
+    # pprint.pprint(data)
+    data = request.args.getlist('data')
+    pprint.pprint(data)
+
+
+    answer = contact.as_dict()
+
+    return jsonify(answer)
+

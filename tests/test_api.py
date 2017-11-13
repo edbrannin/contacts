@@ -1,5 +1,6 @@
 import pprint
 from urlparse import urlparse, parse_qs
+from datetime import datetime
 
 import pytest
 from flask import Flask
@@ -110,19 +111,19 @@ def test_list_tags_1_contact(test_client):
     assert False
 
 
-def test_list_tags_login_required_redirect(test_client):
-    rv = test_client.get('/api/tags')
-    print rv
-    pprint.pprint(dir(rv))
-    print rv.status
-    print rv.data
+def should_redirect_to_login(rv, path):
     assert rv.status_code == 302
     assert 'location' in rv.headers
     parsed_url = urlparse(rv.headers['location'])
     assert parsed_url.path == '/login'
     next_url = urlparse(parse_qs(parsed_url.query)['next'][0])
-    assert next_url.path == '/api/tags'
+    assert next_url.path == path
 
+
+
+def test_list_tags_login_required_redirect(test_client):
+    rv = test_client.get('/api/tags')
+    should_redirect_to_login(rv, '/api/tags')
 
 
 def test_list_tags_login_required_success(test_client):
@@ -183,3 +184,34 @@ def test_get_contact(test_client):
     assert rv.json['cached_tag_list'] == c.cached_tag_list
     assert rv.json['mobile_phone'] == c.mobile_phone
 
+def test_put_contact(test_client):
+    login(test_client)
+    c = fake_contact()
+    db.session.commit()
+
+    data = c.as_dict()
+    for k, v in data.items():
+        if isinstance(v, str):
+            data[k] = "BOB " + v
+
+    rv = test_client.put('/api/contacts/{}'.format(c.id), data=data)
+
+    assert rv.status_code == 200
+
+    rv = test_client.get('/api/contacts/{}'.format(c.id), data=data)
+
+    for k, v in rv.json.items():
+        if isinstance(data[k], str):
+            assert data[k] == v
+        else:
+            print "TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v)
+
+
+def test_put_contact_need_login(test_client):
+    c = fake_contact()
+    db.session.commit()
+
+    url = '/api/contacts/{}'.format(c.id)
+    rv = test_client.put(url, data=c.as_dict())
+    should_redirect_to_login(rv, url)
+    # should_redirect_to_login(rv, '/api/tags', data=c.as_dict())

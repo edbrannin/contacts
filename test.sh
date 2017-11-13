@@ -18,5 +18,5 @@ EOF
 
 export SIM_CONTACTS_SETTINGS=test.py
 
-python -m pytest
+python -m pytest --ignore=vue --ignore=node_modules
 

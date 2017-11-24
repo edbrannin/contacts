@@ -2,8 +2,6 @@
 {% block content %}
 <h1>HERE BE PEOPLE.</h1>
 
-<a href="{{ url_for('login') }}">Log in</a>
-
 {% if 'me' in session or g.user %}
 <h2>Session</h2>
 Here's what Facebook told us:
@@ -17,6 +15,8 @@ Here's what Facebook told us:
 
 {% if logged_in %}
 <contacts tags="{{tags}}"></contacts>
+{% else %}
+<p>Not logged in.</p>
 {% endif %}
 
 {% endblock %}

@@ -15,10 +15,9 @@ if app.secret_key == "DEV TESTING":
 toolbar = DebugToolbarExtension(app)
 
 
-from . import views
-from . import model
-from . import auth
+from .views import views
 from .api import api
 
 
 app.register_blueprint(api, url_prefix="/api")
+app.register_blueprint(views, url_prefix="")

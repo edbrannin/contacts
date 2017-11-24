@@ -1,3 +1,28 @@
 .person .note {
-  background-color: wheat;
+  background-color: lightgray;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table td, table th {
+    border: 1px solid lightgray;
+}
+
+table td.name {
+    white-space: nowrap;
+}
+
+table td.phones li {
+    white-space: nowrap;
+    vertical-align: middle;
+    font-family: monospace;
+    display: inline-block;
+}
+table td.phones ul {
+    list-style: none;
+    padding-left: 0;
+    height: 100%;
+    vertical-align: middle;
 }

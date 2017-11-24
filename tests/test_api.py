@@ -92,7 +92,6 @@ def login(test_client, name='Test User'):
         session['me'] = "Test User"
 
 
-@pytest.mark.skip("Let's get the other test working first")
 def test_list_tags_1_contact(test_client):
     c = fake_contact()
     db.session.commit()
@@ -101,14 +100,12 @@ def test_list_tags_1_contact(test_client):
     pprint.pprint(tag_names)
 
 
-    with test_client.session_transaction() as session:
-        session['me'] = 42
+    login(test_client)
 
     rv = test_client.get('/api/tags')
-    print rv
-    pprint.pprint(rv.data)
-    assert tv.data == tag_names
-    assert False
+    pprint.pprint(rv.json)
+    result_tag_names = [tag['name'] for tag in rv.json]
+    assert result_tag_names == tag_names
 
 
 def should_redirect_to_login(rv, path):
@@ -130,11 +127,6 @@ def test_list_tags_login_required_success(test_client):
     login(test_client)
 
     rv = test_client.get('/api/tags')
-    print rv
-    pprint.pprint(dir(rv))
-    print rv.status
-    print rv.data
-    pprint.pprint(rv.json)
     assert rv.status_code == 200
     # No tags defined yet
     assert rv.json == []

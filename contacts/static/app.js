@@ -21,9 +21,9 @@ Vue.component('contacts', {
               <td class="name">{{ person.name }}</td>
               <td class="phones">
                   <ul>
-                    <li v-if="person.mobile_phone">C: {{person.mobile_phone}}</li>
-                    <li v-if="person.home_phone">H: {{person.home_phone}}</li>
-                    <li v-if="person.work_phone">W: {{person.work_phone}}</li>
+                    <li title="Mobile" v-if="person.mobile_phone">C: {{person.mobile_phone}}</li>
+                    <li title="Home" v-if="person.home_phone">H: {{person.home_phone}}</li>
+                    <li title="Work" v-if="person.work_phone">W: {{person.work_phone}}</li>
                 </ul>
               </td>
               <td class="email">{{ person.email }}</td>

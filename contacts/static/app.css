@@ -18,11 +18,15 @@ table td.phones li {
     white-space: nowrap;
     vertical-align: middle;
     font-family: monospace;
-    display: inline-block;
 }
 table td.phones ul {
     list-style: none;
     padding-left: 0;
     height: 100%;
+    margin: 0;
     vertical-align: middle;
+}
+
+table.people tr:hover {
+    background-color: lightgray;
 }

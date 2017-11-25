@@ -58,7 +58,8 @@ Vue.component('contacts', {
         return {
             people: [],
             show_tags: false,
-            error: undefined
+            error: undefined,
+            sortKey: "last_name"
         };
     },
     created: function() {
@@ -85,5 +86,22 @@ Vue.component('contacts', {
             person.show_note = ! person.show_note;
             // console.log("Person:", person);
         }
+    },
+    computed: {
+        sortedPeople: function() {
+            function compare(a, b) {
+                const aa = a[this.sortKey];
+                const bb = b[this.sortKey];
+                if (aa < bb) {
+                    return -1;
+                } else if (aa > bb) {
+                    return 1;
+                }
+                return 0;
+            }
+
+            return this.people.sort(compare);
+        }
     }
+
 });

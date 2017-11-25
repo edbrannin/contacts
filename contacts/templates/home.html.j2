@@ -1,6 +1,11 @@
 {% extends "main.html.j2" %}
 {% block content %}
-<h1>HERE BE PEOPLE.</h1>
+
+{% if logged_in %}
+<contacts tags="{{tags}}"></contacts>
+{% else %}
+<p>Not logged in.</p>
+{% endif %}
 
 {% if 'me' in session or g.user %}
 <h2>Session</h2>
@@ -11,12 +16,6 @@ Here's what Facebook told us:
 <dd>{{g.user[key] | e}}</dd>
 {% endfor %}
 </dl>
-{% endif %}
-
-{% if logged_in %}
-<contacts tags="{{tags}}"></contacts>
-{% else %}
-<p>Not logged in.</p>
 {% endif %}
 
 {% endblock %}

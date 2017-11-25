@@ -6,6 +6,10 @@ table {
     border-collapse: collapse;
 }
 
+table.people {
+    width: 100%;
+}
+
 table td, table th {
     border: 1px solid lightgray;
 }

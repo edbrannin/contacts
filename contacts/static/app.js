@@ -4,7 +4,7 @@ Vue.component('contacts', {
     <div>
       <h2>{{people.length}} People</h2>
       <p v-if="tags">Tags chosen: {{tags}}</p>
-      <table>
+      <table class="people">
         <thead>
           <tr>
             <th>Name</th>

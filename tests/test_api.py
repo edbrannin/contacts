@@ -11,6 +11,8 @@ from contacts import app as APP
 
 fake = Faker()
 
+TEST_EMAIL="test_user@example.com"
+
 def fake_contacts(count):
     return [fake_contact() for c in range(count)]
 
@@ -67,6 +69,7 @@ def app(autorun=True, scope="module"):
         APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         APP.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
         APP.config['DEBUG_TB_ENABLED'] = False
+        APP.config['ALLOWED_USERS'] = TEST_EMAIL
         APP.testing = True
         db.init_app(APP)
     return APP
@@ -89,7 +92,7 @@ def db_tables(app):
 
 def login(test_client, name='Test User'):
     with test_client.session_transaction() as session:
-        session['me'] = "Test User"
+        session['me'] = dict(email=TEST_EMAIL)
 
 
 def test_list_tags_1_contact(test_client):

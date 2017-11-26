@@ -70,10 +70,15 @@ def oauth_authorized():
     me = facebook.get('/me/?fields=email,name,id,picture.height(50).width(50),first_name,last_name')
     g.user = me.data
     session['me'] = me.data
+    email = me.data['email'].strip().lower()
+
+    if email not in app.config['ALLOWED_USERS']:
+        flash("You are not one of the allowed users.  Please ask an admin for access.")
+        return logout()
+
     try:
         session['picture_url'] = me.data['picture']['data']['url']
     except KeyError:
-        email = me.data['email'].ostrip().lower()
         session['picture_url'] = "https://www.gravatar.com/avatar/{}".format(hashlib.md5(email).hexdigest())
 
     print 'Logged in as id={} name={} redirect={}'.format(
@@ -92,6 +97,12 @@ def login_required(f):
         if g.user is None:
             print "No login."
             return redirect(url_for('login', next=request.url))
+
+        email = session['me']['email'].strip().lower()
+        if email not in app.config['ALLOWED_USERS']:
+            flash("You are not one of the allowed users.  Please ask an admin for access.")
+            return logout()
+
         print "Login OK"
         return f(*args, **kwargs)
     return decorated_function

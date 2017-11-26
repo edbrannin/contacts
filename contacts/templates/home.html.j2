@@ -15,10 +15,6 @@ Here's what Facebook told us about you:
 <dt>{{key | e}}</dt>
 <dd>{{session['me'][key] | e}}</dd>
 {% endfor %}
-{% for key in g.user %}
-<dt>{{key | e}}</dt>
-<dd>{{g.user[key] | e}}</dd>
-{% endfor %}
 </dl>
 {% endif %}
 

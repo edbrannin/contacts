@@ -87,3 +87,39 @@ Vue.component('contacts', {
         }
     }
 });
+
+
+
+Vue.component('tags', {
+    props: ['search'],
+    template: `
+    <div>
+      <h2>{{tags.length}} Tags</h2>
+      <p v-if="error">{{error}}</p>
+      <ul class="tags">
+          <li v-for="tag in tags">
+              <a v-bind:href="tag.href">{{tag.name}}</a>
+          </li>
+      </ul>
+    </div>
+    `,
+    data: function() {
+        return {
+            tags: [],
+            error: undefined
+        };
+    },
+    created: function() {
+        console.log('Getting contacts...');
+        // GET /someUrl
+        this.$http.get('/api/tags').then(response => {
+            console.log("Got tags:", response, response.body);
+            // get body data
+            this.tags = response.body;
+        }, response => {
+            console.log("Error getting contacts:", response, response.body);
+            this.error = response.body;
+        });
+    }
+});
+

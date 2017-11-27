@@ -105,14 +105,16 @@ Vue.component('contact', {
               </td>
           </tr>
           <tr>
-              <th>Phones</th>
-              <td class="phones">
-                  <ul>
-                    <li title="Mobile" v-if="person.mobile_phone">C: {{person.mobile_phone}}</li>
-                    <li title="Home" v-if="person.home_phone">H: {{person.home_phone}}</li>
-                    <li title="Work" v-if="person.work_phone">W: {{person.work_phone}}</li>
-                </ul>
-              </td>
+              <th>Cell Phone</th>
+              <td class="phone">{{person.mobile_phone}}</td>
+          </tr>
+          <tr>
+              <th>Home Phone</th>
+              <td class="phone">{{person.home_phone}}</td>
+          </tr>
+          <tr>
+              <th>Work Phone</th>
+              <td class="phone">{{person.work_phone}}</td>
           </tr>
           <tr>
               <th>e-mail</th>

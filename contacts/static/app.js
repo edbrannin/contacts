@@ -130,6 +130,19 @@ Vue.component('contact', {
               <th>Zip Code</th>
               <td class="zip">{{ person.zip_code }}</td>
           </tr>
+
+
+    <!--
+    TODO:
+    active
+    verified_on
+    added_on
+    created_at
+    updated_at
+    cached_tag_list
+    -->
+
+
           <tr>
               <th>Last Name</th>
               <td>{{ person.last_name }}</td>

@@ -37,19 +37,19 @@ Also:
 * [x] ...with any number of tags
 * [ ] Edit a person's details
 * [ ] (Soft?) delete a person
-* [ ] Sort by columns (last name, zip code, etc)
+* [ ] Sort by columns (last name, zip code, etc) (in-browser?)
 
 ### API
 
 * [x] Facebook auth
-    * [ ] Block unathorized access
-    * [ ] ... accepting only pre-configured accounts
-    * [ ] Log out
+    * [x] Block unathorized access
+    * [x] ... accepting only pre-configured accounts
+    * [x] Log out
 * [ ] Add a person
 * [x] Select all people
 * [x] Select all people with one tag
 * [x] ...with any number of tags
-* [ ] Edit a person's details
+* [x] Edit a person's details
 * [ ] (Soft?) delete a person
 * [ ] Sort by columns (last name, zip code, etc)
 * [ ] Generate a PDF of mailing labels for a given set of people
@@ -57,9 +57,9 @@ Also:
 ### UI
 
 * [x] Facebook auth
-    * [ ] Block unathorized access
-    * [ ] ... accepting only pre-configured accounts
-    * [ ] Log out
+    * [x] Block unathorized access
+    * [x] ... accepting only pre-configured accounts
+    * [x] Log out
 * [ ] Add a person
 * [x] Select all people
 * [ ] Select all people with one tag

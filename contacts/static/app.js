@@ -3,6 +3,7 @@ Vue.component('contacts', {
     template: `
     <div>
       <h2>{{people.length}} People</h2>
+      <p v-if="error">{{error}}</p>
       <p v-if="tags">Tags chosen: {{tags}}</p>
       <table class="people">
         <thead>

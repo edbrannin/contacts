@@ -18,7 +18,9 @@ Vue.component('contacts', {
         <tbody>
             <template v-for="(person, index) in people">
             <tr class="person" :key="person.id">
-              <td class="name">{{ person.name }}</td>
+              <td class="name">
+                  <a v-bind:href="person.href">{{ person.name }}</a>
+              </td>
               <td class="phones">
                   <ul>
                     <li title="Mobile" v-if="person.mobile_phone">C: {{person.mobile_phone}}</li>
@@ -84,6 +86,82 @@ Vue.component('contacts', {
 
             person.show_note = ! person.show_note;
             // console.log("Person:", person);
+        }
+    }
+});
+
+Vue.component('contact', {
+    props: ['id'],
+    template: `
+    <div>
+      <h2 v-if="person">{{person.name}}</h2>
+      <p v-if="error">{{error}}</p>
+      <table class="person" v-if="person">
+        <tbody>
+            <tr>
+              <th>Name</th>
+              <td class="name">
+                  <a v-bind:href="person.href">{{ person.name }}</a>
+              </td>
+          </tr>
+          <tr>
+              <th>Phones</th>
+              <td class="phones">
+                  <ul>
+                    <li title="Mobile" v-if="person.mobile_phone">C: {{person.mobile_phone}}</li>
+                    <li title="Home" v-if="person.home_phone">H: {{person.home_phone}}</li>
+                    <li title="Work" v-if="person.work_phone">W: {{person.work_phone}}</li>
+                </ul>
+              </td>
+          </tr>
+          <tr>
+              <th>e-mail</th>
+              <td class="email">{{ person.email }}</td>
+          </tr>
+          <tr>
+              <th>Address</th>
+              <div v-for="note in lines(person.address)">{{note}}</div>
+          </tr>
+          <tr>
+              <th>Zip Code</th>
+              <td class="zip">{{ person.zip_code }}</td>
+          </tr>
+          <tr>
+              <th>Last Name</th>
+              <td>{{ person.last_name }}</td>
+          </tr>
+          <tr>
+              <th>Note</th>
+              <td>
+                <p v-for="note in lines(person.note)">{{note}}</p>
+              </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+    `,
+    data: function() {
+        return {
+            person: undefined,
+            error: undefined
+        };
+    },
+    created: function() {
+        console.log('Getting contacts...');
+        // GET /someUrl
+        this.$http.get('/api/contacts/' + this.id).then(response => {
+            console.log("Got contact:", response, response.body);
+            // get body data
+            this.person = response.body;
+        }, response => {
+            console.log("Error getting contacts:", response, response.body);
+            this.error = response.body;
+        });
+    },
+    methods: {
+        lines: function(text) {
+            return text.split(/\r?\n/);
         }
     }
 });

@@ -32,7 +32,7 @@ def show_tag(tag_id):
 def list_contacts():
     tags = request.args.getlist('tag')
     answer = [
-            contact.as_dict()
+            contact.as_dict(href=url_for('views.show_contact', contact_id=contact.id))
             for contact in Contact.list(*tags)
             ]
     return jsonify(answer)

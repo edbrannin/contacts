@@ -7,8 +7,9 @@ from . import app
 db = SQLAlchemy()
 
 class AsDict(object):
-   def as_dict(self):
-       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+   def as_dict(self, **other):
+       other.update({c.name: getattr(self, c.name) for c in self.__table__.columns})
+       return other
 
 
 db.init_app(app)

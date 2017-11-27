@@ -45,15 +45,81 @@ def get_contact(contact_id):
 
     return jsonify(answer)
 
+REQUIRED_FIELDS = [
+    "name",
+    "last_name",
+    "active",
+    "note",
+]
+
 @api.route('/contacts/<contact_id>', methods=['PUT'])
 @login_required
 def put_contact(contact_id):
     contact = Contact.get_by_id(contact_id)
 
-    # pprint.pprint(data)
-    data = request.args.getlist('data')
-    pprint.pprint(data)
+    # Required fields
+    for name in REQUIRED_FIELDS:
+        if name not in request.form:
+            # FIXME
+            raise "Missing required field: {}".format(name)
 
+    if request.form['name']:
+        contact.name = request.form['name']
+    else:
+        del contact.name
+
+    if request.form['last_name']:
+        contact.last_name = request.form['last_name']
+    else:
+        del contact.last_name
+
+    if request.form['address']:
+        contact.address = request.form['address']
+    else:
+        del contact.address
+
+    if request.form['zip_code']:
+        contact.zip_code = request.form['zip_code']
+    else:
+        del contact.zip_code
+
+    if request.form['home_phone']:
+        contact.home_phone = request.form['home_phone']
+    else:
+        del contact.home_phone
+
+    if request.form['work_phone']:
+        contact.work_phone = request.form['work_phone']
+    else:
+        del contact.work_phone
+
+    if request.form['email']:
+        contact.email = request.form['email']
+    else:
+        del contact.email
+
+    if request.form['active']:
+        contact.active = request.form['active']
+    else:
+        del contact.active
+
+    if request.form['verified_on']:
+        # contact.verified_on = request.form['verified_on']
+        pass
+    else:
+        del contact.verified_on
+
+    if request.form['note']:
+        contact.note = request.form['note']
+    else:
+        del contact.note
+
+    # TODO Tags
+
+    if request.form['mobile_phone']:
+        contact.mobile_phone = request.form['mobile_phone']
+    else:
+        del contact.mobile_phone
 
     answer = contact.as_dict()
 

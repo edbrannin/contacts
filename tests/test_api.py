@@ -100,15 +100,18 @@ def test_list_tags_1_contact(test_client):
     db.session.commit()
 
     tag_names = [t.name for t in c.tags]
-    pprint.pprint(tag_names)
-
 
     login(test_client)
 
     rv = test_client.get('/api/tags')
+    assert tag_names == [tag['name'] for tag in rv.json]
+
     pprint.pprint(rv.json)
-    result_tag_names = [tag['name'] for tag in rv.json]
-    assert result_tag_names == tag_names
+    return
+    # TODO Also assert this
+    for tag in rv.json:
+        assert tag.count == 1
+
 
 
 def should_redirect_to_login(rv, path):
@@ -185,22 +188,29 @@ def test_put_contact(test_client):
     db.session.commit()
 
     data = c.as_dict()
+    assert isinstance(data['name'], unicode), "{} = {} is a {}".format('name', data['name'], data['name'].__class__)
     for k, v in data.items():
-        if isinstance(v, str):
+        if isinstance(v, unicode):
+            print "************************"
             data[k] = "BOB " + v
 
     rv = test_client.put('/api/contacts/{}'.format(c.id), data=data)
 
     assert rv.status_code == 200
-
-    rv = test_client.get('/api/contacts/{}'.format(c.id), data=data)
-
     for k, v in rv.json.items():
-        if isinstance(data[k], str):
+        if isinstance(data[k], unicode):
             assert data[k] == v
         else:
             print "TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v)
 
+
+    rv = test_client.get('/api/contacts/{}'.format(c.id), data=data)
+
+    for k, v in rv.json.items():
+        if isinstance(data[k], unicode):
+            assert data[k] == v
+        else:
+            print "TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v)
 
 def test_put_contact_need_login(test_client):
     c = fake_contact()

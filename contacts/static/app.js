@@ -122,7 +122,9 @@ Vue.component('contact', {
           </tr>
           <tr>
               <th>Address</th>
-              <div v-for="note in lines(person.address)">{{note}}</div>
+              <td>
+                <div v-for="note in lines(person.address)">{{note}}</div>
+              </td>
           </tr>
           <tr>
               <th>Zip Code</th>

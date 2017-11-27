@@ -46,3 +46,12 @@ ul.tags li {
     padding: 0.25em;
     margin: 0.25em;
 }
+
+ul#nav li {
+    display: inline-block;
+    margin: 0 1em;
+}
+
+ul#nav {
+    background-color: yellow;
+}

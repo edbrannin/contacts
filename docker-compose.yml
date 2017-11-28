@@ -4,8 +4,8 @@ services:
   contacts:
    image: edbrannin/contacts
    volumes:
-       - "./instance:/app/instance:ro"
-       - "./db:/app/db:rw"
+       - "./instance:/app/web/instance:ro"
+       - "./db:/app/web/db:rw"
    restart: "no"
    ports:
        - "127.0.0.1:5000:5000"

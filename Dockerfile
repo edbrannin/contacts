@@ -1,15 +1,14 @@
-FROM ubuntu:latest
+FROM leafney/docker-flask
 MAINTAINER Ed Brannin "edbrannin@gmail.com"
-RUN apt-get update -y \
- && apt-get install -y \
-            python-pip \
-            python-dev \
-            build-essential \
- && rm -rf /var/lib/apt/lists/*
-COPY . /app
-WORKDIR /app
-RUN pip install --no-cache-dir -r requirements.txt && mkdir -p /app/instance
+WORKDIR /app/web
+RUN apk update && \
+    apk add zlib-dev && \
+    rm -rf /var/cache/apk/*
+
 ENV FLASK_APP=contacts SIM_CONTACTS_SETTINGS=config.py FLASK_DEBUG=0
-VOLUME ["/app/instance", "/app/db"]
-# ENTRYPOINT ["python"]
 CMD ["/usr/bin/python2", "-m", "flask", "run"]
+
+COPY . /app/web
+RUN pip install --no-cache-dir -r requirements.txt && mkdir -p /app/web/instance
+VOLUME ["/app/web/instance", "/app/web/db"]
+# ENTRYPOINT ["python"]

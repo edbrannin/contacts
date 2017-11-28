@@ -2,7 +2,7 @@ FROM leafney/docker-flask
 MAINTAINER Ed Brannin "edbrannin@gmail.com"
 WORKDIR /app/web
 RUN apk update && \
-    apk add py-reportlab && \
+    apk add py-pillow build-base && \
     rm -rf /var/cache/apk/*
 
 ENV FLASK_APP=contacts SIM_CONTACTS_SETTINGS=config.py FLASK_DEBUG=0

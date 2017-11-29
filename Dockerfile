@@ -12,6 +12,6 @@ ENV FLASK_APP=contacts SIM_CONTACTS_SETTINGS=config.py FLASK_DEBUG=0
 COPY requirements.txt /app/web/
 RUN pip install --no-cache-dir -r requirements.txt && mkdir -p /app/web/instance
 
-COPY app.py /app/web/
+RUN rm /app/web/app.py
 COPY . /app/web/
 VOLUME ["/app/web/instance", "/app/web/db"]

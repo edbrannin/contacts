@@ -2,7 +2,7 @@ version: "3"
 
 services:
   contacts:
-   image: edbrannin/contacts
+   image: "edbrannin/contacts:feature_alpine-gunicorn"
    volumes:
        - "./instance:/app/web/instance:ro"
        - "./db:/app/web/db:rw"

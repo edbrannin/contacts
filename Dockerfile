@@ -7,6 +7,11 @@ RUN apk update && \
 
 ENV FLASK_APP=contacts SIM_CONTACTS_SETTINGS=config.py FLASK_DEBUG=0
 
-COPY . /app/web
+# https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/#add-or-copy
+# Try not to invalidate the `pip install` step by copything everything else after
+COPY requirements.txt /app/web/
 RUN pip install --no-cache-dir -r requirements.txt && mkdir -p /app/web/instance
+
+COPY app.py /app/web/
+COPY . /app/web/
 VOLUME ["/app/web/instance", "/app/web/db"]

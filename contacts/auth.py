@@ -39,8 +39,16 @@ def get_facebook_token(token=None):
 
 @app.route('/login')
 def login():
+    try:
+        scheme = app.config('PREFERRED_URL_SCHEME') or 'http'
+    except:
+        print "Error determining URL scheme"
+        scheme = "http"
+        traceback.print_exc()
+    print "URL scheme is {}".format(scheme)
     return facebook.authorize(callback=url_for('oauth_authorized',
         next=request.args.get('next') or request.referrer or None,
+        _scheme=scheme,
         _external=True))
 
 

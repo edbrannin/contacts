@@ -41,7 +41,7 @@ def get_facebook_token(token=None):
 @app.route('/login')
 def login():
     try:
-        scheme = app.config('PREFERRED_URL_SCHEME') or 'http'
+        scheme = app.config['PREFERRED_URL_SCHEME'] or 'http'
     except:
         print "Error determining URL scheme"
         scheme = "http"

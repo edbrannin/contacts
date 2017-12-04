@@ -30,6 +30,32 @@ I'm just adding this sentence to check if it winds up in the container.
 
 ## Roadmap
 
+### Milestone 1 (DONE)
+
+- Read-only
+- [x] List all contacts
+- [x] Show contact details (no tags)
+
+### Release 2
+
+- [ ] List contacts by tag
+- [ ] Show tags for contact
+
+### Release 3
+
+- [ ] Edit contact details
+- [ ] Edit contact tags
+
+### Release 4
+
+- [ ] Add contact (and tags)
+
+### Release 5
+
+- [ ] Render Address Label PDF of current tag-view
+
+## By Component
+
 ### Model
 
 * [x] Add a person
@@ -73,5 +99,6 @@ I'm just adding this sentence to check if it winds up in the container.
 ### Future
 
 * DB-configurable user whitelist
+    * Currently config-file
 * Event-log-driven data migration
 

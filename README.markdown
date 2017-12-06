@@ -62,7 +62,8 @@ I'm just adding this sentence to check if it winds up in the container.
 * [x] Select all people
 * [x] Select all people with one tag
 * [x] ...with any number of tags
-* [ ] Edit a person's details
+* [x] Edit a person's details
+* [ ] Edit a person's tags
 * [ ] (Soft?) delete a person
 * [ ] Sort by columns (last name, zip code, etc) (in-browser?)
 
@@ -89,9 +90,10 @@ I'm just adding this sentence to check if it winds up in the container.
     * [x] Log out
 * [ ] Add a person
 * [x] Select all people
-* [ ] Select all people with one tag
+* [x] Select all people with one tag
 * [ ] ...with any number of tags
 * [ ] Edit a person's details
+* [ ] Edit a person's tags
 * [ ] (Soft?) delete a person
 * [ ] Sort by columns (last name, zip code, etc)
 * [ ] Generate a PDF of mailing labels for a given set of people

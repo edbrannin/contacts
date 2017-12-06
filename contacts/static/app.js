@@ -1,11 +1,15 @@
+const bus = new Vue();
+
 Vue.component('contacts', {
     props: ['tags'],
     template: `
     <div>
-      <h2>{{people.length}} People</h2>
+      <h2 v-if="! loading">{{people.length}} People</h2>
+      <h2 v-if="loading">Loading...</h2>
       <p v-if="error">{{error}}</p>
-      <p v-if="tags">Tags chosen: {{tags}}</p>
-      <table class="people">
+      <p v-if="tagList.length">Tags chosen: <span v-for="(tag, index) in tagList"><span v-if="index > 0">, </span>{{tag}}</span></p>
+      <div v-if="tagList.length"><button v-on:click="clearTags">Clear Tags</button></div>
+      <table class="people" v-if="! loading">
         <thead>
           <tr>
             <th>Name</th>
@@ -51,34 +55,35 @@ Vue.component('contacts', {
                 <span class="tag" v-for="tag in person.tags">{{tag}}</span>
               </td>
             </tr>
-
           </template>
         </tbody>
       </table>
     </div>
     `,
     data: function() {
-        return {
-            people: [],
-            show_tags: false,
-            error: undefined
-        };
+      const tags = []
+      if (this.tags) {
+        tags = this.tags.split(/, */);
+      }
+      return {
+        people: [],
+        show_tags: false,
+        tagList: tags,
+        error: undefined,
+        loading: true,
+      };
     },
     created: function() {
-        console.log('Getting contacts...');
-        // GET /someUrl
-        this.$http.get('/api/contacts').then(response => {
-            console.log("Got contacts:", response, response.body);
-            // get body data
-            this.people = response.body;
-            this.people.forEach(function(item, index, array) {
-                Vue.set(item, "show_note", false);
-                Vue.set(item, "has_note", Boolean(item.note));
-            });
-        }, response => {
-            console.log("Error getting contacts:", response, response.body);
-            this.error = response.body;
-        });
+      this.refresh();
+      const self = this;
+
+      bus.$on('tag-selected', function (tag) {
+        // Vue.set(this, 'tags', [tag]);
+        self.tagList = [tag]
+        console.log("Will attempt to show tags: ", self.tagList);
+        self.refresh();
+      })
+
     },
     methods: {
         toggleNote: function(index) {
@@ -87,7 +92,30 @@ Vue.component('contacts', {
 
             person.show_note = ! person.show_note;
             // console.log("Person:", person);
-        }
+        },
+        refresh: function() {
+          this.loading = true;
+          console.log('Getting contacts...');
+          // GET /someUrl
+          this.$http.get('/api/contacts{?tag}', { params: { tag: [ this.tagList ] } }).then(response => {
+            console.log("Got contacts:", response, response.body);
+            // get body data
+            this.people = response.body;
+            this.people.forEach(function(item, index, array) {
+              Vue.set(item, "show_note", false);
+              Vue.set(item, "has_note", Boolean(item.note));
+            });
+            this.loading = false;
+          }, response => {
+            console.log("Error getting contacts:", response, response.body);
+            this.error = response.body;
+          });
+
+      },
+      clearTags: function() {
+        this.tagList = [];
+        this.refresh();
+      },
     }
 });
 
@@ -180,7 +208,9 @@ Vue.component('contact', {
     methods: {
         lines: function(text) {
             return text.split(/\r?\n/);
-        }
+        },
+
+
     }
 });
 
@@ -194,7 +224,7 @@ Vue.component('tags', {
       <p v-if="error">{{error}}</p>
       <ul class="tags">
           <li v-for="tag in tags">
-              <a v-bind:href="tag.href">{{tag.name}}</a>
+              <a v-bind:href="tag.href" v-on:click.prevent="selectTag">{{tag.name}}</a>
           </li>
       </ul>
     </div>
@@ -216,6 +246,14 @@ Vue.component('tags', {
             console.log("Error getting contacts:", response, response.body);
             this.error = response.body;
         });
+    },
+  methods: {
+    selectTag: function(event) {
+      console.log(event);
+      console.log(event.srcElement.text);
+      bus.$emit('tag-selected', event.srcElement.text);
     }
+  }
+
 });
 

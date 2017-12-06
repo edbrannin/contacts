@@ -13,6 +13,7 @@ def all_tags():
     answer = [
             dict(
                 href=url_for('api.show_tag', tag_id=tag.id),
+                people_href=url_for('api.list_contacts', tag=tag.name),
                 **tag.as_dict()
                 )
             for tag in Tag.query.all()
@@ -31,6 +32,7 @@ def show_tag(tag_id):
 @login_required
 def list_contacts():
     tags = request.args.getlist('tag')
+    tags = [t for t in tags if t]
     answer = [
             contact.as_dict(href=url_for('views.show_contact', contact_id=contact.id))
             for contact in Contact.list(*tags)

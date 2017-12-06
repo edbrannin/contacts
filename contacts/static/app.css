@@ -6,7 +6,7 @@ table {
     border-collapse: collapse;
 }
 
-table.people {
+table.people, table.person, table.person input, table.person textarea  {
     width: 100%;
 }
 

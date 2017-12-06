@@ -1,3 +1,5 @@
+import json
+
 from flask import *
 from flask_oauthlib.client import OAuth, OAuthException
 from flask_debugtoolbar import DebugToolbarExtension
@@ -21,3 +23,22 @@ from .api import api
 
 app.register_blueprint(api, url_prefix="/api")
 app.register_blueprint(views, url_prefix="")
+
+@app.before_first_request
+def prime_edits():
+    from .model import db, Contact, Edit
+    db.create_all()
+    edit_count = Edit.query.count()
+    print "Edit count: {}".format(edit_count)
+    if edit_count == 0:
+        print "LOADING EDIT BASELINE"
+        for contact in Contact.query.all():
+            edit = Edit(
+                    subject_type='Contact',
+                    subject_id=contact.id,
+                    after=json.dumps(contact.as_dict()),
+                    user='SYSTEM'
+                    )
+            db.session.add(edit)
+        rows = db.session.commit()
+        print "SAVED {} rows".format(rows)

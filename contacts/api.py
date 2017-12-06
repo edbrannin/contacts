@@ -59,71 +59,97 @@ REQUIRED_FIELDS = [
 def put_contact(contact_id):
     contact = Contact.get_by_id(contact_id)
 
+    print "Getting JSON from {}".format(request.get_data())
+    body = request.get_json()
+
+
+    print "Checking required fields"
     # Required fields
     for name in REQUIRED_FIELDS:
-        if name not in request.form:
+        if name not in body:
             # FIXME
-            raise "Missing required field: {}".format(name)
+            raise Exception("Missing required field: {}.  Request: {}".format(name, body))
 
-    if request.form['name']:
-        contact.name = request.form['name']
+    print "Saving Before-state"
+    before = contact.as_dict()
+
+    print "STARTING UPDATES"
+
+    if body['name']:
+        contact.name = body['name']
     else:
-        del contact.name
+        contact.name = None
 
-    if request.form['last_name']:
-        contact.last_name = request.form['last_name']
+    print "NAME DONE"
+    if body['last_name']:
+        contact.last_name = body['last_name']
     else:
-        del contact.last_name
+        contact.last_name = None
 
-    if request.form['address']:
-        contact.address = request.form['address']
+    if body['address']:
+        contact.address = body['address']
     else:
-        del contact.address
+        contact.address = None
 
-    if request.form['zip_code']:
-        contact.zip_code = request.form['zip_code']
+    if body['zip_code']:
+        contact.zip_code = body['zip_code']
     else:
-        del contact.zip_code
+        contact.zip_code = None
 
-    if request.form['home_phone']:
-        contact.home_phone = request.form['home_phone']
+    if body['home_phone']:
+        contact.home_phone = body['home_phone']
     else:
-        del contact.home_phone
+        contact.home_phone = None
 
-    if request.form['work_phone']:
-        contact.work_phone = request.form['work_phone']
+    if body['work_phone']:
+        contact.work_phone = body['work_phone']
     else:
-        del contact.work_phone
+        contact.work_phone = None
 
-    if request.form['email']:
-        contact.email = request.form['email']
+    if body['email']:
+        contact.email = body['email']
     else:
-        del contact.email
+        contact.email = None
 
-    if request.form['active']:
-        contact.active = request.form['active']
+    if body['active']:
+        contact.active = body['active']
     else:
-        del contact.active
+        contact.active = None
 
-    if request.form['verified_on']:
-        # contact.verified_on = request.form['verified_on']
+    print "PROGRESSING"
+    
+    if body['verified_on']:
+        # contact.verified_on = body['verified_on']
         pass
     else:
-        del contact.verified_on
+        contact.verified_on = None
 
-    if request.form['note']:
-        contact.note = request.form['note']
+    if body['note']:
+        contact.note = body['note']
     else:
-        del contact.note
+        contact.note = None
 
     # TODO Tags
 
-    if request.form['mobile_phone']:
-        contact.mobile_phone = request.form['mobile_phone']
+    if body['mobile_phone']:
+        contact.mobile_phone = body['mobile_phone']
     else:
-        del contact.mobile_phone
+        contact.mobile_phone = None
 
-    answer = contact.as_dict()
+    after = contact.as_dict()
+    edit = Edit(
+            subject_type='Contact',
+            subject_id=contact.id,
+            before=json.dumps(before),
+            after=json.dumps(after),
+            user=session['me']['email'].strip().lower()
+            )
 
-    return jsonify(answer)
+    print "Saving..."
+    db.session.add(contact)
+    db.session.add(edit)
+    db.session.commit()
+    print "SAVED"
 
+
+    return jsonify(after)

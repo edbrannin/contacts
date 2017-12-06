@@ -50,6 +50,17 @@ class Tagging(db.Model):
     tag = db.relationship(Tag, lazy='joined')
     taggable = db.relationship("Contact", lazy='joined')
 
+class Edit(db.Model, AsDict):
+    __tablename__ = 'edits'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    subject_type = db.Column(db.String(255))
+    subject_id = db.Column(db.Integer)
+    user = db.Column(db.String(255))
+    before = db.Column(db.Text)
+    after = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+
 class Contact(db.Model, AsDict):
     __tablename__ = "contacts"
 
@@ -102,3 +113,7 @@ class Contact(db.Model, AsDict):
         tagging.tag = tag
         # self.tags.append(tag)
         self.taggings.append(tagging)
+
+# TODO Audo-create Edits before_commit
+# http://docs.sqlalchemy.org/en/latest/orm/session_state_management.html#session-attributes
+# http://docs.sqlalchemy.org/en/latest/orm/events.html#sqlalchemy.orm.events.SessionEvents.before_commit

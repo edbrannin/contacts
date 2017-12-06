@@ -124,40 +124,48 @@ Vue.component('contact', {
     template: `
     <div>
       <h2 v-if="person">{{person.name}}</h2>
+      <div><button v-if="! editing" v-on:click="edit">Edit</button></div>
       <p v-if="error">{{error}}</p>
       <table class="person" v-if="person">
         <tbody>
             <tr>
               <th>Name</th>
-              <td class="name">
-                  <a v-bind:href="person.href">{{ person.name }}</a>
-              </td>
+              <td v-if="editing" class="name"><input v-model="person.name"></input></td>
+              <td v-if="! editing" class="name">{{ person.name }}</td>
           </tr>
           <tr>
               <th>Cell Phone</th>
-              <td class="phone">{{person.mobile_phone}}</td>
+              <td v-if="editing" class="phone"><input v-model="person.mobile_phone"></input></td>
+              <td v-if="! editing" class="phone">{{person.mobile_phone}}</td>
           </tr>
           <tr>
               <th>Home Phone</th>
-              <td class="phone">{{person.home_phone}}</td>
+              <td v-if="editing" class="phone"><input v-model="person.home_phone"></input></td>
+              <td v-if="! editing" class="phone">{{person.home_phone}}</td>
           </tr>
           <tr>
               <th>Work Phone</th>
-              <td class="phone">{{person.work_phone}}</td>
+              <td v-if="editing" class="phone"><input v-model="person.work_phone"></input></td>
+              <td v-if="! editing" class="phone">{{person.work_phone}}</td>
           </tr>
           <tr>
               <th>e-mail</th>
-              <td class="email">{{ person.email }}</td>
+              <td v-if="editing" class="email"><input v-model="person.email"></input></td>
+              <td v-if="! editing" class="email">{{ person.email }}</td>
           </tr>
           <tr>
               <th>Address</th>
-              <td>
+              <td v-if="editing">
+                <textarea v-model="person.address"></textarea>
+              </td>
+              <td v-if="! editing">
                 <div v-for="note in lines(person.address)">{{note}}</div>
               </td>
           </tr>
           <tr>
               <th>Zip Code</th>
-              <td class="zip">{{ person.zip_code }}</td>
+              <td v-if="editing" class="zip"><input v-model="person.zip_code"></input></td>
+              <td v-if="! editing" class="zip">{{ person.zip_code }}</td>
           </tr>
 
 
@@ -174,23 +182,32 @@ Vue.component('contact', {
 
           <tr>
               <th>Last Name</th>
-              <td>{{ person.last_name }}</td>
+              <td v-if="! editing">{{ person.last_name }}</td>
+              <td v-if="editing"><input v-model="person.last_name"></input></td>
           </tr>
           <tr>
               <th>Note</th>
-              <td>
+              <td v-if="! editing">
                 <p v-for="note in lines(person.note)">{{note}}</p>
+              </td>
+              <td v-if="editing">
+                <textarea v-model="person.note"></textarea>
               </td>
           </tr>
 
         </tbody>
       </table>
+
+      <div v-if="editing">
+        <button v-on:click="save">Save</button>
+      </div>
     </div>
     `,
     data: function() {
         return {
             person: undefined,
-            error: undefined
+            error: undefined,
+            editing: false,
         };
     },
     created: function() {
@@ -206,12 +223,21 @@ Vue.component('contact', {
         });
     },
     methods: {
-        lines: function(text) {
-            return text.split(/\r?\n/);
-        },
-
-
-    }
+      lines: function(text) {
+        return text.split(/\r?\n/);
+      },
+      edit: function() {
+        this.editing = true;
+      },
+      save: function() {
+        console.log("PUT %s", '/api/contacts/' + this.id, this.person);
+        this.$http.put('/api/contacts/' + this.id, this.person).then(response => {
+          this.editing = false;
+        }, response => {
+          console.log("Error:", response);
+        });
+      }
+    },
 });
 
 

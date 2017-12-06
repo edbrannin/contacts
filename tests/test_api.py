@@ -3,7 +3,7 @@ from urlparse import urlparse, parse_qs
 from datetime import datetime
 
 import pytest
-from flask import Flask
+from flask import Flask, json
 from faker import Faker
 
 from contacts.model import *
@@ -187,6 +187,8 @@ def test_put_contact(test_client):
     c = fake_contact()
     db.session.commit()
 
+    edit_count = Edit.query.count()
+
     data = c.as_dict()
     assert isinstance(data['name'], unicode), "{} = {} is a {}".format('name', data['name'], data['name'].__class__)
     for k, v in data.items():
@@ -194,8 +196,10 @@ def test_put_contact(test_client):
             print "************************"
             data[k] = "BOB " + v
 
-    rv = test_client.put('/api/contacts/{}'.format(c.id), data=data)
+    # Make sure the PUT response has the updated values
+    rv = test_client.put('/api/contacts/{}'.format(c.id), data=json.dumps(data), content_type="application/json")
 
+    assert Edit.query.count() == edit_count + 1
     assert rv.status_code == 200
     for k, v in rv.json.items():
         if isinstance(data[k], unicode):
@@ -204,8 +208,10 @@ def test_put_contact(test_client):
             print "TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v)
 
 
-    rv = test_client.get('/api/contacts/{}'.format(c.id), data=data)
+    # Make sure a new request also returns the right thing
+    rv = test_client.get('/api/contacts/{}'.format(c.id))
 
+    assert rv.status_code == 200
     for k, v in rv.json.items():
         if isinstance(data[k], unicode):
             assert data[k] == v

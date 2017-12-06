@@ -38,12 +38,14 @@ I'm just adding this sentence to check if it winds up in the container.
 
 ### Release 2
 
-- [ ] List contacts by tag
-- [ ] Show tags for contact
+- [x] Edit contact details
+- [x] List contacts by tag
+- [ ] Edit (Audit) log for contacts
+- [ ] ... Automagic
 
 ### Release 3
 
-- [ ] Edit contact details
+- [ ] Show tags for contact
 - [ ] Edit contact tags
 
 ### Release 4
@@ -92,11 +94,12 @@ I'm just adding this sentence to check if it winds up in the container.
 * [x] Select all people
 * [x] Select all people with one tag
 * [ ] ...with any number of tags
-* [ ] Edit a person's details
+* [x] Edit a person's details
 * [ ] Edit a person's tags
 * [ ] (Soft?) delete a person
 * [ ] Sort by columns (last name, zip code, etc)
 * [ ] Generate a PDF of mailing labels for a given set of people
+* [ ] Hide phones unless clicked(?) (for privacy reasons)
 
 ### Future
 

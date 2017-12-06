@@ -187,7 +187,7 @@ def test_put_contact(test_client):
     c = fake_contact()
     db.session.commit()
 
-    edit_count = Edit.query.count()
+    assert  Edit.query.count() == 0
 
     data = c.as_dict()
     assert isinstance(data['name'], unicode), "{} = {} is a {}".format('name', data['name'], data['name'].__class__)
@@ -199,13 +199,22 @@ def test_put_contact(test_client):
     # Make sure the PUT response has the updated values
     rv = test_client.put('/api/contacts/{}'.format(c.id), data=json.dumps(data), content_type="application/json")
 
-    assert Edit.query.count() == edit_count + 1
+    assert Edit.query.count() == 1
     assert rv.status_code == 200
     for k, v in rv.json.items():
         if isinstance(data[k], unicode):
             assert data[k] == v
         else:
             print "TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v)
+
+    # FIXME Ask just for the newest Edit; this only works because there's only 1 in the empty test DB
+    edit = Edit.query.first()
+    assert edit.user == TEST_EMAIL
+    assert edit.subject_id == c.id
+    assert edit.subject_type == "Contact"
+    assert edit.before is not None
+    assert edit.after is not None
+    assert edit.created_at is not None
 
 
     # Make sure a new request also returns the right thing

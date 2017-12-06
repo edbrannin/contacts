@@ -30,7 +30,7 @@ I'm just adding this sentence to check if it winds up in the container.
 
 ## Roadmap
 
-### Milestone 1 (DONE)
+### Release 1 (DONE)
 
 - Read-only
 - [x] List all contacts

@@ -40,11 +40,11 @@ I'm just adding this sentence to check if it winds up in the container.
 
 - [x] Edit contact details
 - [x] List contacts by tag
-- [ ] Edit (Audit) log for contacts
-- [ ] ... Automagic
+- [x] Edit (Audit) log for contacts
 
 ### Release 3
 
+- [ ] Edit-log Automagic (via before-commit hook)
 - [ ] Show tags for contact
 - [ ] Edit contact tags
 

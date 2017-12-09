@@ -44,7 +44,6 @@ I'm just adding this sentence to check if it winds up in the container.
 
 ### Release 3
 
-- [ ] Edit-log Automagic (via before-commit hook)
 - [ ] Show tags for contact
 - [ ] Edit contact tags
 
@@ -55,6 +54,11 @@ I'm just adding this sentence to check if it winds up in the container.
 ### Release 5
 
 - [ ] Render Address Label PDF of current tag-view
+
+### Bonus
+
+- [ ] Edit-log Automagic (via before-commit hook)
+- [ ] BEtter error display for AJAX?
 
 ## By Component
 

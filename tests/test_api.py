@@ -192,6 +192,7 @@ def test_put_contact(test_client):
     assert  Edit.query.count() == 0
 
     data = c.as_dict()
+    data['tags']= [tag.name for tag in c.tags]
     assert isinstance(data['name'], unicode), "{} = {} is a {}".format('name', data['name'], data['name'].__class__)
     for k, v in data.items():
         if isinstance(v, unicode):

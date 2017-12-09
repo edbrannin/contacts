@@ -1,6 +1,7 @@
 import datetime
 
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.orm import subqueryload
 from flask_sqlalchemy import SQLAlchemy
 from . import app
 
@@ -107,8 +108,10 @@ class Contact(db.Model, AsDict):
         return q.all()
 
     @classmethod
-    def get_by_id(cls, id):
+    def get_by_id(cls, id, with_tags=True):
         q = cls.query.filter(Contact.id == id)
+        if with_tags:
+            q = q.options(subqueryload(Contact.taggings))
         return q.one()
 
     def add_tag(self, tag_name):

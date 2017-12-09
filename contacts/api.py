@@ -44,6 +44,7 @@ def list_contacts():
 def get_contact(contact_id):
     contact = Contact.get_by_id(contact_id)
     answer = contact.as_dict()
+    answer['tags'] = [tag.name for tag in contact.tags]
 
     return jsonify(answer)
 

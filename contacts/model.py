@@ -35,6 +35,11 @@ class Tag(db.Model, AsDict):
             tag = Tag(name=name)
         return tag
 
+    @classmethod
+    def all(self):
+        """docstring for all"""
+        return Tag.query.order_by(Tag.name).all()
+
     def __str__(self):
         return "Tag<{}>".format(self.name)
 

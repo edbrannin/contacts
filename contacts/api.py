@@ -16,7 +16,7 @@ def all_tags():
                 people_href=url_for('api.list_contacts', tag=tag.name),
                 **tag.as_dict()
                 )
-            for tag in Tag.query.all()
+            for tag in Tag.all()
             ]
     return jsonify(answer)
 

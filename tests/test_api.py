@@ -99,12 +99,14 @@ def test_list_tags_1_contact(test_client):
     c = fake_contact()
     db.session.commit()
 
-    tag_names = [t.name for t in c.tags]
+    expected_tag_names = [t.name for t in c.tags]
 
     login(test_client)
 
     rv = test_client.get('/api/tags')
-    assert tag_names == [tag['name'] for tag in rv.json]
+    observed_tag_names = [tag['name'] for tag in rv.json]
+    assert set(expected_tag_names) == set(observed_tag_names)
+    assert sorted(expected_tag_names) == sorted(observed_tag_names)
 
     pprint.pprint(rv.json)
     return

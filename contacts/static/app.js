@@ -197,6 +197,12 @@ Vue.component('contact', {
               </td>
           </tr>
 
+          <tr>
+              <th>Tags</th>
+              <td v-if="editing" class="tags"><input v-model="person.tags" disabled FIXME></input></td>
+              <td v-else class="tags"><ul><li v-for="tag in person.tags">{{ tag }}</li></ul></td>
+          </tr>
+
         </tbody>
       </table>
 

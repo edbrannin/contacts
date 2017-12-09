@@ -133,43 +133,42 @@ Vue.component('contact', {
             <tr>
               <th>Name</th>
               <td v-if="editing" class="name"><input v-model="person.name"></input></td>
-              <td v-if="! editing" class="name">{{ person.name }}</td>
+              <td v-else class="name">{{ person.name }}</td>
           </tr>
           <tr>
               <th>Cell Phone</th>
               <td v-if="editing" class="phone"><input v-model="person.mobile_phone"></input></td>
-              <td v-if="! editing" class="phone">{{person.mobile_phone}}</td>
+              <td v-else class="phone">{{person.mobile_phone}}</td>
           </tr>
           <tr>
               <th>Home Phone</th>
               <td v-if="editing" class="phone"><input v-model="person.home_phone"></input></td>
-              <td v-if="! editing" class="phone">{{person.home_phone}}</td>
+              <td v-else class="phone">{{person.home_phone}}</td>
           </tr>
           <tr>
               <th>Work Phone</th>
               <td v-if="editing" class="phone"><input v-model="person.work_phone"></input></td>
-              <td v-if="! editing" class="phone">{{person.work_phone}}</td>
+              <td v-else class="phone">{{person.work_phone}}</td>
           </tr>
           <tr>
               <th>e-mail</th>
               <td v-if="editing" class="email"><input v-model="person.email"></input></td>
-              <td v-if="! editing" class="email">{{ person.email }}</td>
+              <td v-else class="email">{{ person.email }}</td>
           </tr>
           <tr>
               <th>Address</th>
               <td v-if="editing">
                 <textarea v-model="person.address"></textarea>
               </td>
-              <td v-if="! editing">
+              <td v-else>
                 <div v-for="note in lines(person.address)">{{note}}</div>
               </td>
           </tr>
           <tr>
               <th>Zip Code</th>
               <td v-if="editing" class="zip"><input v-model="person.zip_code"></input></td>
-              <td v-if="! editing" class="zip">{{ person.zip_code }}</td>
+              <td v-else class="zip">{{ person.zip_code }}</td>
           </tr>
-
 
     <!--
     TODO:
@@ -184,12 +183,12 @@ Vue.component('contact', {
 
           <tr>
               <th>Last Name</th>
-              <td v-if="! editing">{{ person.last_name }}</td>
+              <td v-else>{{ person.last_name }}</td>
               <td v-if="editing"><input v-model="person.last_name"></input></td>
           </tr>
           <tr>
               <th>Note</th>
-              <td v-if="! editing">
+              <td v-else>
                 <p v-for="note in lines(person.note)">{{note}}</p>
               </td>
               <td v-if="editing">

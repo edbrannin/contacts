@@ -125,7 +125,9 @@ Vue.component('contact', {
     <div>
       <h2 v-if="person">{{person.name}}</h2>
       <div><button v-if="! editing" v-on:click="edit">Edit</button></div>
-      <p v-if="error">{{error}}</p>
+      <pre v-if="error">{{error}}</pre>
+      <div><button v-on:click="toggleDebug">Debug</button></div>
+      <pre v-if="debug">{{JSON.stringify(person, null, 2)}}</pre>
       <table class="person" v-if="person">
         <tbody>
             <tr>
@@ -208,6 +210,7 @@ Vue.component('contact', {
             person: undefined,
             error: undefined,
             editing: false,
+            debug: false,
         };
     },
     created: function() {
@@ -228,6 +231,9 @@ Vue.component('contact', {
       },
       edit: function() {
         this.editing = true;
+      },
+      toggleDebug: function() {
+        this.debug = ! this.debug;
       },
       save: function() {
         console.log("PUT %s", '/api/contacts/' + this.id, this.person);

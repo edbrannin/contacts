@@ -25,6 +25,12 @@ app.register_blueprint(api, url_prefix="/api")
 app.register_blueprint(views, url_prefix="")
 
 @app.before_first_request
+def print_url_map():
+    print "URL map:"
+    for rule in app.url_map.iter_rules():
+        print rule
+
+@app.before_first_request
 def prime_edits():
     from .model import db, Contact, Edit
     db.create_all()

@@ -104,7 +104,7 @@ class Contact(db.Model, AsDict):
 
     @classmethod
     def list(cls, *tags):
-        q = cls.query
+        q = cls.query.order_by(Contact.last_name)
         # https://stackoverflow.com/a/26303412/25625
         for tag in tags:
             q = q.filter(Contact.tags.any(Tag.name == tag))

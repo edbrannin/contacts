@@ -194,11 +194,9 @@ def test_put_contact(test_client):
 
     assert  Edit.query.count() == 0
 
-    data = c.as_dict()
-    data['tags'] = c.tag_names
+    data = c.as_dict(tags=True)
 
     # Make sure Contact.as_dict() handles tags
-    assert data['tags'] == [tag.name for tag in c.tags]
     assert TEST_TAGS[0] in data['tags']
     assert TEST_TAGS[1] not in data['tags']
 

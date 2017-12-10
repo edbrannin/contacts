@@ -125,6 +125,12 @@ class Contact(db.Model, AsDict):
         # self.tags.append(tag)
         self.taggings.append(tagging)
 
+    def as_dict(self, tags=False):
+        answer = super(Contact, self).as_dict()
+        if tags:
+            answer['tags'] = self.tag_names
+        return answer
+
     def remove_tag(self, tag_name):
         remove_taggings = []
         for tag in self.tags:

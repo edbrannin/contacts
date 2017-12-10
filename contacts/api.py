@@ -43,8 +43,7 @@ def list_contacts():
 @login_required
 def get_contact(contact_id):
     contact = Contact.get_by_id(contact_id)
-    answer = contact.as_dict()
-    answer['tags'] = contact.tag_names
+    answer = contact.as_dict(tags=True)
     return jsonify(answer)
 
 REQUIRED_FIELDS = [
@@ -71,8 +70,7 @@ def put_contact(contact_id):
             raise Exception("Missing required field: {}.  Request: {}".format(name, body))
 
     print "Saving Before-state"
-    before = contact.as_dict()
-    before['tags'] = contact.tag_names
+    before = contact.as_dict(tags=True)
 
     print "STARTING UPDATES"
 
@@ -145,8 +143,7 @@ def put_contact(contact_id):
     else:
         contact.mobile_phone = None
 
-    after = contact.as_dict()
-    after['tags'] = contact.tag_names
+    after = contact.as_dict(tags=True)
     edit = Edit(
             subject_type='Contact',
             subject_id=contact.id,

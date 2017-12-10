@@ -42,7 +42,7 @@ def prime_edits():
             edit = Edit(
                     subject_type='Contact',
                     subject_id=contact.id,
-                    after=json.dumps(contact.as_dict()),
+                    after=json.dumps(contact.as_dict(tags=True)),
                     user='SYSTEM'
                     )
             db.session.add(edit)

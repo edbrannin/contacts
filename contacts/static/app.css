@@ -55,3 +55,7 @@ ul#nav li {
 ul#nav {
     background-color: yellow;
 }
+
+table.person th {
+    white-space: nowrap;
+}

@@ -95,6 +95,9 @@ class Contact(db.Model, AsDict):
             #, creator=Tag.named
             )
 
+    @property
+    def tag_names(self):
+        return [tag.name for tag in self.tags]
 
     def __repr__(self):
         return '<Contact %r>' % self.name
@@ -121,6 +124,14 @@ class Contact(db.Model, AsDict):
         tagging.tag = tag
         # self.tags.append(tag)
         self.taggings.append(tagging)
+
+    def remove_tag(self, tag_name):
+        remove_taggings = []
+        for tag in self.tags:
+            if tag_name == tag.name:
+                remove_taggings.append(tag)
+        for tagging in remove_taggings:
+            self.tags.remove(tagging)
 
 # TODO Audo-create Edits before_commit
 # http://docs.sqlalchemy.org/en/latest/orm/session_state_management.html#session-attributes

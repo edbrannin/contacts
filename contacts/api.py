@@ -44,8 +44,7 @@ def list_contacts():
 def get_contact(contact_id):
     contact = Contact.get_by_id(contact_id)
     answer = contact.as_dict()
-    answer['tags'] = [tag.name for tag in contact.tags]
-
+    answer['tags'] = contact.tag_names
     return jsonify(answer)
 
 REQUIRED_FIELDS = [
@@ -73,6 +72,7 @@ def put_contact(contact_id):
 
     print "Saving Before-state"
     before = contact.as_dict()
+    before['tags'] = contact.tag_names
 
     print "STARTING UPDATES"
 
@@ -130,7 +130,15 @@ def put_contact(contact_id):
     else:
         contact.note = None
 
-    # TODO Tags
+    if body['tags']:
+        old_tags = set(contact.tag_names)
+        new_tags = set(body['tags'])
+        for removed_tag in old_tags.difference(new_tags):
+            contact.remove_tag(removed_tag)
+        for new_tag in new_tags.difference(old_tags):
+            contact.add_tag(new_tag)
+    else:
+        contact.tags.clear()
 
     if body['mobile_phone']:
         contact.mobile_phone = body['mobile_phone']
@@ -138,6 +146,7 @@ def put_contact(contact_id):
         contact.mobile_phone = None
 
     after = contact.as_dict()
+    after['tags'] = contact.tag_names
     edit = Edit(
             subject_type='Contact',
             subject_id=contact.id,

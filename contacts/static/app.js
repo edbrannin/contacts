@@ -183,23 +183,43 @@ Vue.component('contact', {
 
           <tr>
               <th>Last Name</th>
-              <td v-else>{{ person.last_name }}</td>
               <td v-if="editing"><input v-model="person.last_name"></input></td>
+              <td v-else>{{ person.last_name }}</td>
           </tr>
           <tr>
               <th>Note</th>
-              <td v-else>
-                <p v-for="note in lines(person.note)">{{note}}</p>
-              </td>
               <td v-if="editing">
                 <textarea v-model="person.note"></textarea>
+              </td>
+              <td v-else>
+                <p v-for="note in lines(person.note)">{{note}}</p>
               </td>
           </tr>
 
           <tr>
               <th>Tags</th>
-              <td v-if="editing" class="tags"><input v-model="person.tags" disabled FIXME></input></td>
-              <td v-else class="tags"><ul><li v-for="tag in person.tags">{{ tag }}</li></ul></td>
+              <td v-if="editing" class="tags">
+                <h3>Active Tags</h3>
+                <ul class="tags">
+                    <li v-for="tag in person.tags">
+                        <a href="#" v-on:click.prevent="removeTag">{{ tag }}</a>
+                    </li>
+                </ul>
+                <hr />
+                <h3>Other Tags</h3>
+                <ul class="tags">
+                    <li v-for="tag in other_tags">
+                        <a href="#" v-on:click.prevent="addTag">{{ tag }}</a>
+                    </li>
+                </ul>
+              </td>
+              <td v-else class="tags">
+                <ul class="tags">
+                    <li v-for="tag in person.tags">
+                        <a>{{ tag }}</a>
+                    </li>
+                </ul>
+              </td>
           </tr>
 
         </tbody>
@@ -213,6 +233,7 @@ Vue.component('contact', {
     data: function() {
         return {
             person: undefined,
+            all_tags: [],
             error: undefined,
             editing: false,
             debug: false,
@@ -229,6 +250,15 @@ Vue.component('contact', {
             console.log("Error getting contacts:", response, response.body);
             this.error = response.body;
         });
+
+        this.$http.get('/api/tags').then(response => {
+            console.log("Got tags:", response, response.body);
+            // get body data
+            this.all_tags = response.body.map((tag) => { return tag.name; });
+        }, response => {
+            console.log("Error getting tags:", response, response.body);
+            this.error = response.body;
+        });
     },
     methods: {
       lines: function(text) {
@@ -236,6 +266,14 @@ Vue.component('contact', {
       },
       edit: function() {
         this.editing = true;
+      },
+      addTag: function(evt) {
+        console.log("ADD tag", evt.srcElement.text);
+        this.person.tags.push(evt.srcElement.text);
+      },
+      removeTag: function(evt) {
+        console.log("REMOVE tag", evt.srcElement.text);
+        this.person.tags.splice(this.person.tags.indexOf(evt.srcElement.text), 1);
       },
       toggleDebug: function() {
         this.debug = ! this.debug;
@@ -249,32 +287,54 @@ Vue.component('contact', {
         });
       }
     },
+  computed: {
+    other_tags: (self) => {
+      if (self.person === undefined) {
+        console.log("self.person is undefined!  self is:", self);
+        return [];
+      }
+      const personTagSet = new Set(self.person.tags);
+      const answer = self.all_tags.filter(x => { return ! personTagSet.has(x) });
+      console.log("personTagSet", personTagSet);
+      console.log("all_tags", self.all_tags);
+      console.log("Other tags are:", answer);
+      return answer;
+    },
+  }
 });
 
 
 
 Vue.component('tags', {
-    props: ['search'],
+    props: {
+      search: String,
+      tags: {
+        type: Array,
+        default: undefined,
+      },
+    },
     template: `
     <div>
       <h2>{{tags.length}} Tags</h2>
       <p v-if="error">{{error}}</p>
       <ul class="tags">
           <li v-for="tag in tags">
-              <a v-bind:href="tag.href" v-on:click.prevent="selectTag">{{tag.name}}</a>
+              <a v-bind:href="tag.href" v-on:click.prevent="selectTag">{{ tag.name }}</a>
           </li>
       </ul>
     </div>
     `,
     data: function() {
         return {
-            tags: [],
             error: undefined
         };
     },
     created: function() {
-        console.log('Getting contacts...');
         // GET /someUrl
+        if (this.tags != undefined) {
+          return;
+        }
+        console.log('Getting all tags...');
         this.$http.get('/api/tags').then(response => {
             console.log("Got tags:", response, response.body);
             // get body data

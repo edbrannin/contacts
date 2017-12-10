@@ -52,8 +52,10 @@ def fake_contact():
     c.updated_at = c.verified_on
     # TODO Tags fake.random_sample_unique(TEST_TAGS)
     # c.cached_tag_list = db.Column(db.Text)
-    for tag in fake.random_sample_unique(TEST_TAGS, length=3):
+    for tag in fake.random_sample_unique(TEST_TAGS[5:], length=3):
         c.add_tag(tag)
+    # ALWAYS have TEST_TAGS[0] attached
+    c.add_tag(TEST_TAGS[0])
     c.mobile_phone = "555-555-632"
     db.session.add(c)
     return c
@@ -182,6 +184,7 @@ def test_get_contact(test_client):
     # assert rv.json['created_at'] == c.created_at
     # assert rv.json['updated_at'] == c.updated_at
     assert rv.json['cached_tag_list'] == c.cached_tag_list
+    assert rv.json['tags'] == c.tag_names
     assert rv.json['mobile_phone'] == c.mobile_phone
 
 def test_put_contact(test_client):
@@ -192,12 +195,25 @@ def test_put_contact(test_client):
     assert  Edit.query.count() == 0
 
     data = c.as_dict()
-    data['tags']= [tag.name for tag in c.tags]
+    data['tags'] = c.tag_names
+
+    # Make sure Contact.as_dict() handles tags
+    assert data['tags'] == [tag.name for tag in c.tags]
+    assert TEST_TAGS[0] in data['tags']
+    assert TEST_TAGS[1] not in data['tags']
+
+
+    # Make sure String props have an expected class (to expose root cause for test errors)
     assert isinstance(data['name'], unicode), "{} = {} is a {}".format('name', data['name'], data['name'].__class__)
+    # Mangle contact data
     for k, v in data.items():
         if isinstance(v, unicode):
             print "************************"
             data[k] = "BOB " + v
+    data['tags'].remove(TEST_TAGS[0])
+    data['tags'].append(TEST_TAGS[1])
+    assert TEST_TAGS[0] not in data['tags']
+    assert TEST_TAGS[1] in data['tags']
 
     # Make sure the PUT response has the updated values
     rv = test_client.put('/api/contacts/{}'.format(c.id), data=json.dumps(data), content_type="application/json")
@@ -209,6 +225,8 @@ def test_put_contact(test_client):
             assert data[k] == v
         else:
             print "TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v)
+    assert TEST_TAGS[0] not in rv.json['tags']
+    assert TEST_TAGS[1] in rv.json['tags']
 
     # FIXME Ask just for the newest Edit; this only works because there's only 1 in the empty test DB
     edit = Edit.query.first()
@@ -219,7 +237,6 @@ def test_put_contact(test_client):
     assert edit.after is not None
     assert edit.created_at is not None
 
-
     # Make sure a new request also returns the right thing
     rv = test_client.get('/api/contacts/{}'.format(c.id))
 
@@ -229,6 +246,8 @@ def test_put_contact(test_client):
             assert data[k] == v
         else:
             print "TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v)
+    assert TEST_TAGS[0] not in rv.json['tags']
+    assert TEST_TAGS[1] in rv.json['tags']
 
 def test_put_contact_need_login(test_client):
     c = fake_contact()

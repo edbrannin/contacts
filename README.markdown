@@ -44,8 +44,8 @@ I'm just adding this sentence to check if it winds up in the container.
 
 ### Release 3
 
-- [ ] Show tags for contact
-- [ ] Edit contact tags
+- [x] Show tags for contact
+- [x] Edit contact tags
 
 ### Release 4
 
@@ -58,7 +58,7 @@ I'm just adding this sentence to check if it winds up in the container.
 ### Bonus
 
 - [ ] Edit-log Automagic (via before-commit hook)
-- [ ] BEtter error display for AJAX?
+- [ ] Better error display for AJAX?
 
 ## By Component
 
@@ -69,7 +69,7 @@ I'm just adding this sentence to check if it winds up in the container.
 * [x] Select all people with one tag
 * [x] ...with any number of tags
 * [x] Edit a person's details
-* [ ] Edit a person's tags
+* [x] Edit a person's tags
 * [ ] (Soft?) delete a person
 * [ ] Sort by columns (last name, zip code, etc) (in-browser?)
 
@@ -99,7 +99,7 @@ I'm just adding this sentence to check if it winds up in the container.
 * [x] Select all people with one tag
 * [ ] ...with any number of tags
 * [x] Edit a person's details
-* [ ] Edit a person's tags
+* [x] Edit a person's tags
 * [ ] (Soft?) delete a person
 * [ ] Sort by columns (last name, zip code, etc)
 * [ ] Generate a PDF of mailing labels for a given set of people

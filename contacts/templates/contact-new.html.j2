@@ -1,0 +1,10 @@
+{% extends "main.html.j2" %}
+{% block content %}
+
+{% if logged_in %}
+<contact></contact>
+{% else %}
+<p>Not logged in.</p>
+{% endif %}
+
+{% endblock %}

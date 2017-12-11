@@ -49,9 +49,81 @@ def get_contact(contact_id):
 REQUIRED_FIELDS = [
     "name",
     "last_name",
-    "active",
+    # "active",
     "note",
 ]
+
+def request_value(body, name):
+    if name in body and body[name]:
+        return body[name]
+    return None
+
+@api.route('/contacts/', methods=['POST'])
+@login_required
+def new_contact():
+    contact = Contact()
+
+    print "Getting JSON from {}".format(request.get_data())
+    body = request.get_json()
+
+
+    print "Checking required fields"
+    # Required fields
+    for name in REQUIRED_FIELDS:
+        if name not in body:
+            # FIXME
+            raise Exception("Missing required field: {}.  Request: {}".format(name, body))
+
+    print "Saving Before-state"
+    before = contact.as_dict(tags=True)
+
+    print "STARTING UPDATES"
+
+    contact.name = request_value(body, 'name')
+    contact.last_name = request_value(body, 'last_name')
+    contact.address = request_value(body, 'address')
+    contact.zip_code = request_value(body, 'zip_code')
+    contact.home_phone = request_value(body, 'home_phone')
+    contact.work_phone = request_value(body, 'work_phone')
+    contact.mobile_phone = request_value(body, 'mobile_phone')
+    contact.email = request_value(body, 'email')
+    contact.active = request_value(body, 'active')
+    # contact.verified_on = request_value(body, 'verified_on')
+    contact.note = request_value(body, 'note')
+
+    if body['tags']:
+        old_tags = set(contact.tag_names)
+        new_tags = set(body['tags'])
+        for removed_tag in old_tags.difference(new_tags):
+            contact.remove_tag(removed_tag)
+        for new_tag in new_tags.difference(old_tags):
+            contact.add_tag(new_tag)
+    else:
+        contact.tags.clear()
+
+
+    print "Saving..."
+    with db.session.begin(subtransaction=True):
+        with db.session.begin_nested():
+            db.session.add(contact)
+        after = contact.as_dict(tags=True)
+        edit = Edit(
+                subject_type='Contact',
+                subject_id=contact.id,
+                before=json.dumps(before),
+                after=json.dumps(after),
+                user=session['me']['email'].strip().lower()
+                )
+
+    db.session.add(edit)
+    db.session.commit()
+    print "SAVED"
+
+    after = contact.as_dict(
+            tags=True,
+            href=url_for('views.show_contact', contact_id=contact.id)
+            )
+    return jsonify(after)
 
 @api.route('/contacts/<contact_id>', methods=['PUT'])
 @login_required
@@ -74,59 +146,17 @@ def put_contact(contact_id):
 
     print "STARTING UPDATES"
 
-    if body['name']:
-        contact.name = body['name']
-    else:
-        contact.name = None
-
-    print "NAME DONE"
-    if body['last_name']:
-        contact.last_name = body['last_name']
-    else:
-        contact.last_name = None
-
-    if body['address']:
-        contact.address = body['address']
-    else:
-        contact.address = None
-
-    if body['zip_code']:
-        contact.zip_code = body['zip_code']
-    else:
-        contact.zip_code = None
-
-    if body['home_phone']:
-        contact.home_phone = body['home_phone']
-    else:
-        contact.home_phone = None
-
-    if body['work_phone']:
-        contact.work_phone = body['work_phone']
-    else:
-        contact.work_phone = None
-
-    if body['email']:
-        contact.email = body['email']
-    else:
-        contact.email = None
-
-    if body['active']:
-        contact.active = body['active']
-    else:
-        contact.active = None
-
-    print "PROGRESSING"
-    
-    if body['verified_on']:
-        # contact.verified_on = body['verified_on']
-        pass
-    else:
-        contact.verified_on = None
-
-    if body['note']:
-        contact.note = body['note']
-    else:
-        contact.note = None
+    contact.name = request_value(body, 'name')
+    contact.last_name = request_value(body, 'last_name')
+    contact.address = request_value(body, 'address')
+    contact.zip_code = request_value(body, 'zip_code')
+    contact.home_phone = request_value(body, 'home_phone')
+    contact.work_phone = request_value(body, 'work_phone')
+    contact.mobile_phone = request_value(body, 'mobile_phone')
+    contact.email = request_value(body, 'email')
+    contact.active = request_value(body, 'active')
+    # contact.verified_on = request_value(body, 'verified_on')
+    contact.note = request_value(body, 'note')
 
     if body['tags']:
         old_tags = set(contact.tag_names)
@@ -157,6 +187,5 @@ def put_contact(contact_id):
     db.session.add(edit)
     db.session.commit()
     print "SAVED"
-
 
     return jsonify(after)

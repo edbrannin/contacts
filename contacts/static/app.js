@@ -240,19 +240,23 @@ Vue.component('contact', {
         };
     },
     created: function() {
-        console.log('Getting contacts...');
-        // GET /someUrl
-        this.$http.get('/api/contacts/' + this.id).then(response => {
-            console.log("Got contact:", response, response.body);
-            // get body data
-            this.person = response.body;
-        }, response => {
-            console.log("Error getting contacts:", response, response.body);
-            this.error = response.body;
-        });
+        if (this.id) {
+          console.log('Getting contacts...');
+          this.$http.get('/api/contacts/' + this.id).then(response => {
+              console.log("Got contact:", response.body);
+              // get body data
+              this.person = response.body;
+          }, response => {
+              console.log("Error getting contacts:", response, response.body);
+              this.error = response.body;
+          });
+        } else {
+          this.editing = true;
+          this.person = { tags: [], };
+        }
 
         this.$http.get('/api/tags').then(response => {
-            console.log("Got tags:", response, response.body);
+            console.log("Got tags:", response.body);
             // get body data
             this.all_tags = response.body.map((tag) => { return tag.name; });
         }, response => {
@@ -269,22 +273,43 @@ Vue.component('contact', {
       },
       addTag: function(evt) {
         console.log("ADD tag", evt.srcElement.text);
+        if (! this.person.tags) {
+          this.person.tags = [];
+        }
         this.person.tags.push(evt.srcElement.text);
+        this.person.tags.sort();
       },
       removeTag: function(evt) {
         console.log("REMOVE tag", evt.srcElement.text);
+        if (! this.person.tags) {
+          this.person.tags = [];
+        }
         this.person.tags.splice(this.person.tags.indexOf(evt.srcElement.text), 1);
       },
       toggleDebug: function() {
         this.debug = ! this.debug;
       },
       save: function() {
-        console.log("PUT %s", '/api/contacts/' + this.id, this.person);
-        this.$http.put('/api/contacts/' + this.id, this.person).then(response => {
-          this.editing = false;
-        }, response => {
-          console.log("Error:", response);
-        });
+        if (this.id) {
+          console.log("PUT %s", '/api/contacts/' + this.id, this.person);
+          this.$http.put('/api/contacts/' + this.id, this.person).then(response => {
+            this.editing = false;
+          }, response => {
+            console.log("Error:", response);
+          });
+
+        } else {
+          console.log("POST %s", '/api/contacts/', this.person);
+          this.$http.post('/api/contacts/', this.person).then(response => {
+            console.log("POSTed contact", response, response.body);
+            this.editing = false;
+            if (response.body.href) {
+              window.location.href = response.body.href;
+            }
+          }, response => {
+            console.log("Error:", response);
+          });
+        }
       }
     },
   computed: {

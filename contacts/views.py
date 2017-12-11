@@ -10,6 +10,11 @@ views = Blueprint('views', __name__)
 def home():
     return render_template('home.html.j2')
 
+@views.route('/contact/new')
+@login_required
+def new_contact():
+    return render_template('contact-new.html.j2')
+
 @views.route('/contact/<contact_id>')
 @login_required
 def show_contact(contact_id):

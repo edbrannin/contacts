@@ -187,6 +187,86 @@ def test_get_contact(test_client):
     assert rv.json['tags'] == c.tag_names
     assert rv.json['mobile_phone'] == c.mobile_phone
 
+def test_new_contact_needs_login(test_client):
+    pass
+    # TODO
+
+def test_new_contact(test_client):
+    login(test_client)
+
+    assert Edit.query.count() == 0
+
+    data = dict(
+            tags=TEST_TAGS[0:3],
+            name = u'Dalinar Kholin',
+            last_name = u'Kholin',
+            address = u'Urithru',
+            zip_code = u'11111',
+            # home_phone = u'',
+            # work_phone = u'',
+            # mobile_phone = u'',
+            email = u'blackthorn@alekhar.gov',
+            active = True,
+            # verified_on = db.Column(db.Date),
+            # added_on = db.Column(db.Date),
+            note = u'Highking of Alekhar',
+            # created_at = db.Column(db.DateTime, default=datetime.datetime.now),
+            # updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now),
+            # cached_tag_list = u'',
+            )
+
+    # Make sure Contact.as_dict() handles tags
+    assert TEST_TAGS[0] in data['tags']
+    assert TEST_TAGS[1] in data['tags']
+    assert TEST_TAGS[2] in data['tags']
+    assert TEST_TAGS[3] not in data['tags']
+    assert TEST_TAGS[4] not in data['tags']
+
+
+    # Make sure String props have an expected class (to expose root cause for test errors)
+    assert isinstance(data['name'], unicode), "{} = {} is a {}".format('name', data['name'], data['name'].__class__)
+
+    rv = test_client.post('/api/contacts/', data=json.dumps(data), content_type="application/json")
+
+    assert Edit.query.count() == 1
+    assert rv.status_code == 200
+    for k, v in rv.json.items():
+        if k in data and isinstance(data[k], unicode):
+            assert data[k] == v, "Mismatch on {}".format(k)
+    assert rv.json['created_at'] is not None
+    assert rv.json['updated_at'] is not None
+
+    # Make sure Contact.as_dict() handles tags
+    assert TEST_TAGS[0] in rv.json['tags']
+    assert TEST_TAGS[1] in rv.json['tags']
+    assert TEST_TAGS[2] in rv.json['tags']
+    assert TEST_TAGS[3] not in rv.json['tags']
+    assert TEST_TAGS[4] not in rv.json['tags']
+
+    new_contact_id = rv.json['id']
+
+    # FIXME Ask just for the newest Edit; this only works because there's only 1 in the empty test DB
+    edit = Edit.query.first()
+    assert edit.user == TEST_EMAIL
+    assert edit.subject_id == new_contact_id
+    assert edit.subject_type == "Contact"
+    assert edit.before is not None
+    assert edit.after is not None
+    assert edit.created_at is not None
+
+    # Make sure a new request also returns the right thing
+    rv = test_client.get('/api/contacts/{}'.format(new_contact_id))
+
+    assert rv.status_code == 200
+    for k, v in rv.json.items():
+        if isinstance(data[k], unicode):
+            assert data[k] == v, "Mismatch on {}".format(k)
+        else:
+            print "TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v)
+    assert TEST_TAGS[0] not in rv.json['tags']
+    assert TEST_TAGS[1] in rv.json['tags']
+
+
 def test_put_contact(test_client):
     login(test_client)
     c = fake_contact()

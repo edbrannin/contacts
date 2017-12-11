@@ -83,7 +83,7 @@ class Contact(db.Model, AsDict):
     added_on = db.Column(db.Date)
     note = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now, default=datetime.datetime.now)
     cached_tag_list = db.Column(db.Text)
     mobile_phone = db.Column(db.String(255))
 
@@ -125,8 +125,8 @@ class Contact(db.Model, AsDict):
         # self.tags.append(tag)
         self.taggings.append(tagging)
 
-    def as_dict(self, tags=False):
-        answer = super(Contact, self).as_dict()
+    def as_dict(self, tags=False, **kwargs):
+        answer = super(Contact, self).as_dict(**kwargs)
         if tags:
             answer['tags'] = self.tag_names
         return answer

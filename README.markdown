@@ -49,16 +49,19 @@ I'm just adding this sentence to check if it winds up in the container.
 
 ### Release 4
 
-- [ ] Add contact (and tags)
+- [x] Add contact (and tags)
 
 ### Release 5
 
 - [ ] Render Address Label PDF of current tag-view
 
-### Bonus
+### Later
 
-- [ ] Edit-log Automagic (via before-commit hook)
-- [ ] Better error display for AJAX?
+- [ ] Edit-log Automagic (via before-commit hook)?
+- [ ] Better error display for AJAX (in dev?)?
+- [ ] JSON-API?
+- [ ] Add/remove/rename tags
+- [ ] Merge tags
 
 ## By Component
 
@@ -79,7 +82,7 @@ I'm just adding this sentence to check if it winds up in the container.
     * [x] Block unathorized access
     * [x] ... accepting only pre-configured accounts
     * [x] Log out
-* [ ] Add a person
+* [x] Add a person
 * [x] Select all people
 * [x] Select all people with one tag
 * [x] ...with any number of tags
@@ -94,7 +97,7 @@ I'm just adding this sentence to check if it winds up in the container.
     * [x] Block unathorized access
     * [x] ... accepting only pre-configured accounts
     * [x] Log out
-* [ ] Add a person
+* [x] Add a person
 * [x] Select all people
 * [x] Select all people with one tag
 * [ ] ...with any number of tags

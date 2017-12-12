@@ -14,7 +14,7 @@ app.secret_key = app.config.get('SECRET_KEY', "DEV TESTING")
 if app.secret_key == "DEV TESTING":
     print "WARNING: Set a secret key!!!"
 
-toolbar = DebugToolbarExtension(app)
+# toolbar = DebugToolbarExtension(app)
 
 
 from .views import views

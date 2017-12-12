@@ -37,6 +37,11 @@ class Tag(db.Model, AsDict):
         return tag
 
     @classmethod
+    def with_counts(cls, prefix=''):
+        # TODO
+        pass
+
+    @classmethod
     def all(self):
         """docstring for all"""
         return Tag.query.order_by(Tag.name).all()
@@ -66,6 +71,8 @@ class Edit(db.Model, AsDict):
     before = db.Column(db.Text)
     after = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    # subject = db.relationship('Contact', lazy='subquery')
 
 class Contact(db.Model, AsDict):
     __tablename__ = "contacts"

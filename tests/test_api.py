@@ -222,7 +222,6 @@ def test_new_contact(test_client):
     assert TEST_TAGS[3] not in data['tags']
     assert TEST_TAGS[4] not in data['tags']
 
-
     # Make sure String props have an expected class (to expose root cause for test errors)
     assert isinstance(data['name'], unicode), "{} = {} is a {}".format('name', data['name'], data['name'].__class__)
 
@@ -259,12 +258,17 @@ def test_new_contact(test_client):
 
     assert rv.status_code == 200
     for k, v in rv.json.items():
-        if isinstance(data[k], unicode):
+        if k in data and isinstance(data[k], unicode):
             assert data[k] == v, "Mismatch on {}".format(k)
-        else:
+        elif k in data:
             print "TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v)
-    assert TEST_TAGS[0] not in rv.json['tags']
+
+    # Make sure tags work
+    assert TEST_TAGS[0] in rv.json['tags']
     assert TEST_TAGS[1] in rv.json['tags']
+    assert TEST_TAGS[2] in rv.json['tags']
+    assert TEST_TAGS[3] not in rv.json['tags']
+    assert TEST_TAGS[4] not in rv.json['tags']
 
 
 def test_put_contact(test_client):

@@ -103,20 +103,19 @@ def new_contact():
 
 
     print "Saving..."
-    with db.session.begin(subtransaction=True):
-        with db.session.begin_nested():
-            db.session.add(contact)
-        after = contact.as_dict(tags=True)
-        edit = Edit(
-                subject_type='Contact',
-                subject_id=contact.id,
-                before=json.dumps(before),
-                after=json.dumps(after),
-                user=session['me']['email'].strip().lower()
-                )
+    db.session.add(contact)
+    db.session.flush()
+
+    after = contact.as_dict(tags=True)
+    edit = Edit(
+            subject_type='Contact',
+            subject_id=contact.id,
+            before=json.dumps(before),
+            after=json.dumps(after),
+            user=session['me']['email'].strip().lower()
+            )
 
     db.session.add(edit)
-    db.session.commit()
     print "SAVED"
 
     after = contact.as_dict(
@@ -173,6 +172,11 @@ def put_contact(contact_id):
     else:
         contact.mobile_phone = None
 
+    print "Saving..."
+    db.session.add(contact)
+    db.session.flush()
+    db.session.refresh(contact)
+
     after = contact.as_dict(tags=True)
     edit = Edit(
             subject_type='Contact',
@@ -182,8 +186,6 @@ def put_contact(contact_id):
             user=session['me']['email'].strip().lower()
             )
 
-    print "Saving..."
-    db.session.add(contact)
     db.session.add(edit)
     db.session.commit()
     print "SAVED"

@@ -50,7 +50,7 @@ REQUIRED_FIELDS = [
     "name",
     "last_name",
     # "active",
-    "note",
+    # "note",
 ]
 
 def request_value(body, name):

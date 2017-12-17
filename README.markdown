@@ -54,6 +54,7 @@ I'm just adding this sentence to check if it winds up in the container.
 ### Release 5
 
 - [ ] Render Address Label PDF of current tag-view
+    - https://pypi.python.org/pypi/pylabels/1.0.0
 
 ### Later
 
@@ -62,6 +63,9 @@ I'm just adding this sentence to check if it winds up in the container.
 - [ ] JSON-API?
 - [ ] Add/remove/rename tags
 - [ ] Merge tags
+- [ ] Show (And sort by?) contacts-per-tag 
+    - https://stackoverflow.com/questions/25500904/counting-relationships-in-sqlalchemy
+    - https://stackoverflow.com/questions/19484059/sqlalchemy-query-for-object-with-count-of-relationship
 
 ## By Component
 

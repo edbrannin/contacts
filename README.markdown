@@ -53,8 +53,13 @@ I'm just adding this sentence to check if it winds up in the container.
 
 ### Release 5
 
-- [ ] Render Address Label PDF of current tag-view
+- [x] Render Address Label PDF of current tag-view
     - https://pypi.python.org/pypi/pylabels/1.0.0
+
+### Release 6
+
+- [ ] UI for PDF printing
+- [ ] Fix Create Contact
 
 ### Later
 
@@ -93,7 +98,8 @@ I'm just adding this sentence to check if it winds up in the container.
 * [x] Edit a person's details
 * [ ] (Soft?) delete a person
 * [ ] Sort by columns (last name, zip code, etc)
-* [ ] Generate a PDF of mailing labels for a given set of people
+* [x] Generate a PDF of mailing labels for a given tag's people
+    * Tag URL (right-click, copy) + `.pdf`
 
 ### UI
 
@@ -109,7 +115,7 @@ I'm just adding this sentence to check if it winds up in the container.
 * [x] Edit a person's tags
 * [ ] (Soft?) delete a person
 * [ ] Sort by columns (last name, zip code, etc)
-* [ ] Generate a PDF of mailing labels for a given set of people
+* [ ] Generate a PDF of mailing labels for a given tag's people
 * [ ] Hide phones unless clicked(?) (for privacy reasons)
 
 ### Future
@@ -117,4 +123,5 @@ I'm just adding this sentence to check if it winds up in the container.
 * DB-configurable user whitelist
     * Currently config-file
 * Event-log-driven data migration
+    * http://eventsourcing.readthedocs.io/en/v3.1.0/topics/domainmodel.html
 

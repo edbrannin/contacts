@@ -1,9 +1,11 @@
 import pprint
+import StringIO
 
 from flask import *
 
 from .auth import facebook, login_required
 from .model import *
+from .mailing_labels import make_labels
 
 api = Blueprint('api', __name__)
 
@@ -19,6 +21,24 @@ def all_tags():
             for tag in Tag.all()
             ]
     return jsonify(answer)
+
+@api.route('/tags/<tag_id>.pdf')
+@login_required
+def mailing_labels_for_tag(tag_id):
+    tag = Tag.query.filter_by(id=tag_id).first()
+    out_filename = tag.name + ".pdf"
+    people = tag.taggables
+    people = sorted(people, key=lambda p: (
+        # p.zip_code,
+        p.last_name,
+        ))
+
+    strIO = StringIO.StringIO()
+    make_labels(people, strIO)
+    strIO.seek(0)
+    return send_file(strIO,
+                     attachment_filename=out_filename,
+                     as_attachment=True)
 
 @api.route('/tags/<tag_id>')
 @login_required

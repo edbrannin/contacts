@@ -3,4 +3,4 @@ Flask-OAuthlib
 reportlab
 Flask-SQLAlchemy
 flask-debugtoolbar
-
+pylabels

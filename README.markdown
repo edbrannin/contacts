@@ -1,5 +1,13 @@
 [![Build Status](https://travis-ci.org/edbrannin/contacts.svg?branch=master)](https://travis-ci.org/edbrannin/contacts)
 
+## Setup
+
+1. Create `instance/config.py` with the following values:
+    * `FACEBOOK_APP_ID`
+    * `FACEBOOK_APP_SECRET`
+    * `ALLOWED_USERS` (a list of email addresses)
+    * `SECRET_KEY`
+
 ## Requirements
 
 Ted says:

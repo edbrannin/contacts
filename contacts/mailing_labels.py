@@ -3,11 +3,7 @@ from reportlab.graphics.charts.textlabels import Label
 from reportlab.lib.units import cm, mm, inch, pica
 import labels
 
-
 BORDER=False
-
-print dir(labels)
-print labels.__file__
 
 SPECS = labels.Specification(216, 279, 3, 10, 66, 25,
         corner_radius=2,

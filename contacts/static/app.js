@@ -266,7 +266,11 @@ Vue.component('contact', {
     },
     methods: {
       lines: function(text) {
-        return text.split(/\r?\n/);
+          if (text) {
+              return text.split(/\r?\n/);
+          } else {
+              return [];
+          }
       },
       edit: function() {
         this.editing = true;
@@ -333,13 +337,9 @@ Vue.component('contact', {
 Vue.component('tags', {
     props: {
       search: String,
-      tags: {
-        type: Array,
-        default: undefined,
-      },
     },
     template: `
-    <div>
+    <div v-if="tags">
       <h2>{{tags.length}} Tags</h2>
       <p v-if="error">{{error}}</p>
       <ul class="tags">
@@ -351,7 +351,8 @@ Vue.component('tags', {
     `,
     data: function() {
         return {
-            error: undefined
+            error: undefined,
+            tags: [],
         };
     },
     created: function() {

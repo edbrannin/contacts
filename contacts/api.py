@@ -136,6 +136,7 @@ def new_contact():
             )
 
     db.session.add(edit)
+    db.session.commit()
     print "SAVED"
 
     after = contact.as_dict(

@@ -276,19 +276,19 @@ Vue.component('contact', {
         this.editing = true;
       },
       addTag: function(evt) {
-        console.log("ADD tag", evt.srcElement.text);
+        console.log("ADD tag", evt.target.text);
         if (! this.person.tags) {
           this.person.tags = [];
         }
-        this.person.tags.push(evt.srcElement.text);
+        this.person.tags.push(evt.target.text);
         this.person.tags.sort();
       },
       removeTag: function(evt) {
-        console.log("REMOVE tag", evt.srcElement.text);
+        console.log("REMOVE tag", evt.target.text);
         if (! this.person.tags) {
           this.person.tags = [];
         }
-        this.person.tags.splice(this.person.tags.indexOf(evt.srcElement.text), 1);
+        this.person.tags.splice(this.person.tags.indexOf(evt.target.text), 1);
       },
       toggleDebug: function() {
         this.debug = ! this.debug;
@@ -352,7 +352,7 @@ Vue.component('tags', {
     data: function() {
         return {
             error: undefined,
-            tags: [],
+            tags: undefined,
         };
     },
     created: function() {
@@ -372,9 +372,8 @@ Vue.component('tags', {
     },
   methods: {
     selectTag: function(event) {
-      console.log(event);
-      console.log(event.srcElement.text);
-      bus.$emit('tag-selected', event.srcElement.text);
+      console.log("Clicked tag", event.target.text);
+      bus.$emit('tag-selected', event.target.text);
     }
   }
 

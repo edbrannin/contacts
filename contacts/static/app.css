@@ -59,3 +59,7 @@ ul#nav {
 table.person th {
     white-space: nowrap;
 }
+
+table.editing .required {
+  background-color: wheat;
+}

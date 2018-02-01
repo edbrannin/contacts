@@ -128,12 +128,17 @@ Vue.component('contact', {
       <pre v-if="error">{{error}}</pre>
       <div><button v-on:click="toggleDebug">Debug</button></div>
       <pre v-if="debug">{{JSON.stringify(person, null, 2)}}</pre>
-      <table class="person" v-if="person">
+      <table class="person" v-bind:class="{editing: editing}" v-if="person">
         <tbody>
-            <tr>
+          <tr class="required">
               <th>Name</th>
               <td v-if="editing" class="name"><input v-model="person.name"></input></td>
               <td v-else class="name">{{ person.name }}</td>
+          </tr>
+          <tr class="required">
+              <th>Last Name</th>
+              <td v-if="editing"><input v-model="person.last_name"></input></td>
+              <td v-else>{{ person.last_name }}</td>
           </tr>
           <tr>
               <th>Cell Phone</th>
@@ -181,11 +186,6 @@ Vue.component('contact', {
     -->
 
 
-          <tr>
-              <th>Last Name</th>
-              <td v-if="editing"><input v-model="person.last_name"></input></td>
-              <td v-else>{{ person.last_name }}</td>
-          </tr>
           <tr>
               <th>Note</th>
               <td v-if="editing">

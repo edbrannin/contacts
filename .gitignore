@@ -3,3 +3,5 @@ settings.cfg
 .env
 instance/
 .cache/
+node_modules/
+

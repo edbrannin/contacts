@@ -2,5 +2,5 @@
 *.pyc
 .*.sw?
 db
-
+ui/node_modules
 .env

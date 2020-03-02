@@ -8,6 +8,7 @@ Vue.component('contacts', {
       <h2 v-if="loading">Loading...</h2>
       <p v-if="error">{{error}}</p>
       <p v-if="tagList.length">Tags chosen: <span v-for="(tag, index) in tagList"><span v-if="index > 0">, </span>{{tag}}</span></p>
+      <p v-if="tagList.length"><a v-bind:href="'/api/tags/' + tagList[0] + '.pdf'">Download Address Labels</a></p>
       <div v-if="tagList.length"><button v-on:click="clearTags">Clear Tags</button></div>
       <table class="people" v-if="! loading">
         <thead>

@@ -22,10 +22,22 @@ def all_tags():
             ]
     return jsonify(answer)
 
+def tag_by_id_or_name(value):
+    tag = Tag.query.filter_by(id=value).first()
+    if tag:
+        print "Got tag by ID: {}".format(tag)
+        return tag
+    tag = Tag.query.filter_by(name=value).first()
+    if tag:
+        print "Got tag by name: {}".format(tag)
+        return tag
+    print 'No such tag found by ID or name: {}'.format(value)
+    raise ValueError('No such tag found by ID or name: {}'.format(value))
+
 @api.route('/tags/<tag_id>.pdf')
 @login_required
 def mailing_labels_for_tag(tag_id):
-    tag = Tag.query.filter_by(id=tag_id).first()
+    tag = tag_by_id_or_name(tag_id)
     out_filename = tag.name + ".pdf"
     people = tag.taggables
     people = sorted(people, key=lambda p: (

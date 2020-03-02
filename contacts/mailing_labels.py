@@ -4,6 +4,7 @@ from reportlab.lib.units import cm, mm, inch, pica
 import labels
 
 BORDER=False
+OR_CURRENT = True
 
 SPECS = labels.Specification(216, 279, 3, 10, 66, 25,
         corner_radius=2,
@@ -17,7 +18,15 @@ SPECS = labels.Specification(216, 279, 3, 10, 66, 25,
 
 # 215.9 by 279.4
 def write_label(label, width, height, person):
-    text = "\n".join((person.name, person.address))
+    lines = [
+        person.name,
+        person.address,
+    ]
+    if OR_CURRENT and len("\n".join(lines).split('\n')) < 4:
+        lines.insert(1, "Or current resident",)
+    elif OR_CURRENT:
+        print("Skipping Or Current Resident for long address:\n{}", "\n".join(lines))
+    text = "\n".join(lines)
     text = "\n".join([line.strip() for line in text.splitlines()])
     lab = Label()
     lab.setOrigin(5, height - 5)

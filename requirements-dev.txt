@@ -1,7 +1,7 @@
 -r requirements.txt
 
 # Testing
-faker
+faker==0.8.18
 pytest
 pytest-flask
 

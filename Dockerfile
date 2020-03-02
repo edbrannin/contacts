@@ -1,4 +1,4 @@
-FROM leafney/docker-flask
+FROM leafney/docker-flask:py2
 MAINTAINER Ed Brannin "edbrannin@gmail.com"
 WORKDIR /app/web
 RUN apk update && \

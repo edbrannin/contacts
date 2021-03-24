@@ -4,6 +4,7 @@
 faker==0.8.18
 pytest
 pytest-flask
+pyopenssl
 
 # Possibly going to remove?
 nose

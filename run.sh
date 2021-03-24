@@ -12,5 +12,5 @@ export FLASK_DEBUG=1
 export SIM_CONTACTS_SETTINGS=config.py
 
 echo "Run this: open http://localhost:5000"
-python2 -m flask run
+python2 -m flask run --cert=adhoc
 

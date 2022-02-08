@@ -1,7 +1,7 @@
 import json
 
 from flask import *
-from flask_oauthlib.client import OAuth, OAuthException
+# from authlib.integrations.flask_client import OAuth, OAuthError
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__, instance_relative_config=True)

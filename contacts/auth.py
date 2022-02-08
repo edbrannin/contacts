@@ -4,7 +4,7 @@ import pprint
 import hashlib
 import time
 
-from flask_oauthlib.client import OAuth, OAuthException
+from authlib.integrations.flask_client import OAuth, OAuthError
 from flask import *
 
 from . import app
@@ -70,7 +70,7 @@ def oauth_authorized():
         flash('You denied the request to sign in.')
         return redirect(next_url)
 
-    if isinstance(resp, OAuthException):
+    if isinstance(resp, OAuthError):
         return 'Access denied: %s' % resp.message
 
     pprint.pprint(resp)

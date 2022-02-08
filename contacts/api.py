@@ -1,9 +1,8 @@
-import pprint
 import io
 
 from flask import *
 
-from .auth import facebook, login_required
+from .auth import login_required
 from .model import *
 from .mailing_labels import make_labels
 

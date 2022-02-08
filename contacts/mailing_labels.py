@@ -25,7 +25,7 @@ def write_label(label, width, height, person):
     if OR_CURRENT and len("\n".join(lines).split('\n')) < 4:
         lines.insert(1, "Or current resident",)
     elif OR_CURRENT:
-        print("Skipping Or Current Resident for long address:\n{}", "\n".join(lines))
+        print(("Skipping Or Current Resident for long address:\n{}", "\n".join(lines)))
     text = "\n".join(lines)
     text = "\n".join([line.strip() for line in text.splitlines()])
     lab = Label()

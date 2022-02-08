@@ -123,18 +123,18 @@ def test_list_no_tags():
 def test_tags():
     c = fake_contact()
     c2 = fake_contact()
-    print c.name
+    print(c.name)
     for tag in c.tags:
-        print tag
-    print c2.name
+        print(tag)
+    print(c2.name)
     for tag in c2.tags:
-        print tag
+        print(tag)
     db.session.commit()
-    print "Loading contacts"
+    print("Loading contacts")
     for contact in Contact.list():
-        print contact.name
+        print(contact.name)
         for tag in contact.tags:
-            print tag
+            print(tag)
 
 def test_select_one_tag():
     contacts = fake_contacts(5)

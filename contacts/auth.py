@@ -43,10 +43,10 @@ def login():
     try:
         scheme = app.config['PREFERRED_URL_SCHEME'] or 'http'
     except:
-        print "Error determining URL scheme"
+        print("Error determining URL scheme")
         scheme = "http"
         traceback.print_exc()
-    print "URL scheme is {}".format(scheme)
+    print("URL scheme is {}".format(scheme))
     return facebook.authorize(callback=url_for('oauth_authorized',
         next=request.args.get('next') or request.referrer or None,
         _scheme=scheme,
@@ -67,7 +67,7 @@ def oauth_authorized():
     next_url = request.args.get('next') or url_for('index')
     resp = facebook.authorized_response()
     if resp is None:
-        flash(u'You denied the request to sign in.')
+        flash('You denied the request to sign in.')
         return redirect(next_url)
 
     if isinstance(resp, OAuthException):
@@ -90,21 +90,21 @@ def oauth_authorized():
     except KeyError:
         session['picture_url'] = "https://www.gravatar.com/avatar/{}".format(hashlib.md5(email).hexdigest())
 
-    print 'Logged in as id={} name={} redirect={}'.format(
-        me.data['id'], me.data['name'], request.args.get('next'))
+    print('Logged in as id={} name={} redirect={}'.format(
+        me.data['id'], me.data['name'], request.args.get('next')))
     flash('You were signed in as {} ({})'.format(me.data['name'], me.data['id']))
     return redirect(next_url)
 
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        print "Checking for a login..."
+        print("Checking for a login...")
         g.setdefault('user')
         if 'me' in session and session['me'] and not g.user:
             # Legacy login, TODO remove
             g.user = session['me']
         if g.user is None:
-            print "No login."
+            print("No login.")
             return redirect(url_for('login', next=request.url))
 
         email = session['me']['email'].strip().lower()
@@ -112,6 +112,6 @@ def login_required(f):
             flash("You are not one of the allowed users.  Please ask an admin for access.")
             return logout()
 
-        print "Login OK"
+        print("Login OK")
         return f(*args, **kwargs)
     return decorated_function

@@ -2,7 +2,7 @@
 
 if [[ "$VIRTUAL_ENV" == "" ]]; then
   if [ ! -d .env ]; then
-    virtualenv .env
+    python3 -m venv .env
   fi
   . .env/bin/activate
 fi
@@ -18,5 +18,5 @@ EOF
 
 export SIM_CONTACTS_SETTINGS=test.py
 
-python -m pytest --ignore=vue --ignore=node_modules
+python3 -m pytest --ignore=vue --ignore=node_modules
 

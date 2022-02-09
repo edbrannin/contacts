@@ -9,10 +9,10 @@ from flask import *
 
 from . import app
 
-oauth = OAuth()
+oauth = OAuth(app)
 
 # https://flask-oauthlib.readthedocs.io/en/latest/client.html#facebook-oauth
-facebook = oauth.remote_app('facebook',
+facebook = oauth.register('facebook',
     base_url='https://graph.facebook.com/',
     request_token_url=None,
     access_token_url='/oauth/access_token',
@@ -21,6 +21,7 @@ facebook = oauth.remote_app('facebook',
     consumer_secret=app.config['FACEBOOK_APP_SECRET'],
     request_token_params={'scope': 'email'}
 )
+facebook = oauth.create_client('facebook')
 
 @app.context_processor
 def context():
@@ -32,11 +33,12 @@ def context():
 
     return dict(logged_in=logged_in, timestamp=time.time())
 
+'''
 # https://flask-oauthlib.readthedocs.io/en/latest/client.html#signing-in-authorizing
 @facebook.tokengetter
 def get_facebook_token(token=None):
     return session.get('oauth_token')
-
+'''
 
 @app.route('/login')
 def login():
@@ -99,13 +101,14 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         print("Checking for a login...")
-        g.setdefault('user')
-        if 'me' in session and session['me'] and not g.user:
-            # Legacy login, TODO remove
-            g.user = session['me']
-        if g.user is None:
-            print("No login.")
-            return redirect(url_for('login', next=request.url))
+        user = g.setdefault('user')
+        if user is None:
+            if 'me' in session and session['me']:
+                # Legacy login, TODO remove
+                g.user = session['me']
+            else:
+                print("No login.")
+                return redirect(url_for('login', next=request.url))
 
         email = session['me']['email'].strip().lower()
         if email not in app.config['ALLOWED_USERS']:

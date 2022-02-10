@@ -49,11 +49,15 @@ def login():
         scheme = "http"
         traceback.print_exc()
     print("URL scheme is {}".format(scheme))
-    return facebook.authorize(callback=url_for('oauth_authorized',
+    callback_url = url_for(
+        'oauth_authorized',
         next=request.args.get('next') or request.referrer or None,
         _scheme=scheme,
-        _external=True))
-
+        _external=True
+    )
+    print('callback_url:')
+    print(callback_url)
+    return facebook.authorize_redirect(callback=callback_url)
 
 @app.route('/logout')
 def logout():

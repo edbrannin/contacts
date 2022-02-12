@@ -1,9 +1,8 @@
-import pprint
-import StringIO
+import io
 
 from flask import *
 
-from .auth import facebook, login_required
+from .auth import login_required
 from .model import *
 from .mailing_labels import make_labels
 
@@ -25,18 +24,19 @@ def all_tags():
 def tag_by_id_or_name(value):
     tag = Tag.query.filter_by(id=value).first()
     if tag:
-        print "Got tag by ID: {}".format(tag)
+        print("Got tag by ID: {}".format(tag))
         return tag
     tag = Tag.query.filter_by(name=value).first()
     if tag:
-        print "Got tag by name: {}".format(tag)
+        print("Got tag by name: {}".format(tag))
         return tag
-    print 'No such tag found by ID or name: {}'.format(value)
+    print('No such tag found by ID or name: {}'.format(value))
     raise ValueError('No such tag found by ID or name: {}'.format(value))
 
 @api.route('/tags/<tag_id>.pdf')
 @login_required
 def mailing_labels_for_tag(tag_id):
+    # TODO Optionally not indlude "Or current resident"
     tag = tag_by_id_or_name(tag_id)
     out_filename = tag.name + ".pdf"
     people = tag.taggables
@@ -45,7 +45,7 @@ def mailing_labels_for_tag(tag_id):
         p.last_name,
         ))
 
-    strIO = StringIO.StringIO()
+    strIO = io.BytesIO()
     make_labels(people, strIO)
     strIO.seek(0)
     return send_file(strIO,
@@ -95,21 +95,21 @@ def request_value(body, name):
 def new_contact():
     contact = Contact()
 
-    print "Getting JSON from {}".format(request.get_data())
+    print("Getting JSON from {}".format(request.get_data()))
     body = request.get_json()
 
 
-    print "Checking required fields"
+    print("Checking required fields")
     # Required fields
     for name in REQUIRED_FIELDS:
         if name not in body:
             # FIXME
             raise Exception("Missing required field: {}.  Request: {}".format(name, body))
 
-    print "Saving Before-state"
+    print("Saving Before-state")
     before = contact.as_dict(tags=True)
 
-    print "STARTING UPDATES"
+    print("STARTING UPDATES")
 
     contact.name = request_value(body, 'name')
     contact.last_name = request_value(body, 'last_name')
@@ -134,7 +134,7 @@ def new_contact():
         contact.tags.clear()
 
 
-    print "Saving..."
+    print("Saving...")
     db.session.add(contact)
     db.session.flush()
 
@@ -149,7 +149,7 @@ def new_contact():
 
     db.session.add(edit)
     db.session.commit()
-    print "SAVED"
+    print("SAVED")
 
     after = contact.as_dict(
             tags=True,
@@ -162,21 +162,21 @@ def new_contact():
 def put_contact(contact_id):
     contact = Contact.get_by_id(contact_id)
 
-    print "Getting JSON from {}".format(request.get_data())
+    print("Getting JSON from {}".format(request.get_data()))
     body = request.get_json()
 
 
-    print "Checking required fields"
+    print("Checking required fields")
     # Required fields
     for name in REQUIRED_FIELDS:
         if name not in body:
             # FIXME
             raise Exception("Missing required field: {}.  Request: {}".format(name, body))
 
-    print "Saving Before-state"
+    print("Saving Before-state")
     before = contact.as_dict(tags=True)
 
-    print "STARTING UPDATES"
+    print("STARTING UPDATES")
 
     contact.name = request_value(body, 'name')
     contact.last_name = request_value(body, 'last_name')
@@ -205,7 +205,7 @@ def put_contact(contact_id):
     else:
         contact.mobile_phone = None
 
-    print "Saving..."
+    print("Saving...")
     db.session.add(contact)
     db.session.flush()
     db.session.refresh(contact)
@@ -221,6 +221,6 @@ def put_contact(contact_id):
 
     db.session.add(edit)
     db.session.commit()
-    print "SAVED"
+    print("SAVED")
 
     return jsonify(after)

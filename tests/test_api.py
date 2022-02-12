@@ -1,5 +1,5 @@
 import pprint
-from urlparse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs
 from datetime import datetime
 
 import pytest
@@ -198,18 +198,18 @@ def test_new_contact(test_client):
 
     data = dict(
             tags=TEST_TAGS[0:3],
-            name = u'Dalinar Kholin',
-            last_name = u'Kholin',
-            address = u'Urithru',
-            zip_code = u'11111',
+            name = 'Dalinar Kholin',
+            last_name = 'Kholin',
+            address = 'Urithru',
+            zip_code = '11111',
             # home_phone = u'',
             # work_phone = u'',
             # mobile_phone = u'',
-            email = u'blackthorn@alekhar.gov',
+            email = 'blackthorn@alekhar.gov',
             active = True,
             # verified_on = db.Column(db.Date),
             # added_on = db.Column(db.Date),
-            note = u'Highking of Alekhar',
+            note = 'Highking of Alekhar',
             # created_at = db.Column(db.DateTime, default=datetime.datetime.now),
             # updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now),
             # cached_tag_list = u'',
@@ -223,14 +223,14 @@ def test_new_contact(test_client):
     assert TEST_TAGS[4] not in data['tags']
 
     # Make sure String props have an expected class (to expose root cause for test errors)
-    assert isinstance(data['name'], unicode), "{} = {} is a {}".format('name', data['name'], data['name'].__class__)
+    assert isinstance(data['name'], str), "{} = {} is a {}".format('name', data['name'], data['name'].__class__)
 
     rv = test_client.post('/api/contacts/', data=json.dumps(data), content_type="application/json")
 
     assert Edit.query.count() == 1
     assert rv.status_code == 200
-    for k, v in rv.json.items():
-        if k in data and isinstance(data[k], unicode):
+    for k, v in list(rv.json.items()):
+        if k in data and isinstance(data[k], str):
             assert data[k] == v, "Mismatch on {}".format(k)
     assert rv.json['created_at'] is not None
     assert rv.json['updated_at'] is not None
@@ -257,11 +257,11 @@ def test_new_contact(test_client):
     rv = test_client.get('/api/contacts/{}'.format(new_contact_id))
 
     assert rv.status_code == 200
-    for k, v in rv.json.items():
-        if k in data and isinstance(data[k], unicode):
+    for k, v in list(rv.json.items()):
+        if k in data and isinstance(data[k], str):
             assert data[k] == v, "Mismatch on {}".format(k)
         elif k in data:
-            print "TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v)
+            print("TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v))
 
     # Make sure tags work
     assert TEST_TAGS[0] in rv.json['tags']
@@ -286,11 +286,11 @@ def test_put_contact(test_client):
 
 
     # Make sure String props have an expected class (to expose root cause for test errors)
-    assert isinstance(data['name'], unicode), "{} = {} is a {}".format('name', data['name'], data['name'].__class__)
+    assert isinstance(data['name'], str), "{} = {} is a {}".format('name', data['name'], data['name'].__class__)
     # Mangle contact data
-    for k, v in data.items():
-        if isinstance(v, unicode):
-            print "************************"
+    for k, v in list(data.items()):
+        if isinstance(v, str):
+            print("************************")
             data[k] = "BOB " + v
     data['tags'].remove(TEST_TAGS[0])
     data['tags'].append(TEST_TAGS[1])
@@ -302,11 +302,11 @@ def test_put_contact(test_client):
 
     assert Edit.query.count() == 1
     assert rv.status_code == 200
-    for k, v in rv.json.items():
-        if isinstance(data[k], unicode):
+    for k, v in list(rv.json.items()):
+        if isinstance(data[k], str):
             assert data[k] == v
         else:
-            print "TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v)
+            print("TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v))
     assert TEST_TAGS[0] not in rv.json['tags']
     assert TEST_TAGS[1] in rv.json['tags']
 
@@ -323,11 +323,11 @@ def test_put_contact(test_client):
     rv = test_client.get('/api/contacts/{}'.format(c.id))
 
     assert rv.status_code == 200
-    for k, v in rv.json.items():
-        if isinstance(data[k], unicode):
+    for k, v in list(rv.json.items()):
+        if isinstance(data[k], str):
             assert data[k] == v
         else:
-            print "TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v)
+            print("TODO: Compare dates: data[{}] == {} ==? {}".format(k, data[k], v))
     assert TEST_TAGS[0] not in rv.json['tags']
     assert TEST_TAGS[1] in rv.json['tags']
 

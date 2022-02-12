@@ -1,7 +1,7 @@
 import json
 
 from flask import *
-from flask_oauthlib.client import OAuth, OAuthException
+# from authlib.integrations.flask_client import OAuth, OAuthError
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__, instance_relative_config=True)
@@ -12,7 +12,7 @@ app.config.from_pyfile('config.py')
 
 app.secret_key = app.config.get('SECRET_KEY', "DEV TESTING")
 if app.secret_key == "DEV TESTING":
-    print "WARNING: Set a secret key!!!"
+    print("WARNING: Set a secret key!!!")
 
 # toolbar = DebugToolbarExtension(app)
 
@@ -26,18 +26,18 @@ app.register_blueprint(views, url_prefix="")
 
 @app.before_first_request
 def print_url_map():
-    print "URL map:"
+    print("URL map:")
     for rule in app.url_map.iter_rules():
-        print rule
+        print(rule)
 
 @app.before_first_request
 def prime_edits():
     from .model import db, Contact, Edit
     db.create_all()
     edit_count = Edit.query.count()
-    print "Edit count: {}".format(edit_count)
+    print("Edit count: {}".format(edit_count))
     if edit_count == 0:
-        print "LOADING EDIT BASELINE"
+        print("LOADING EDIT BASELINE")
         for contact in Contact.query.all():
             edit = Edit(
                     subject_type='Contact',
@@ -47,4 +47,4 @@ def prime_edits():
                     )
             db.session.add(edit)
         rows = db.session.commit()
-        print "SAVED {} rows".format(rows)
+        print("SAVED {} rows".format(rows))

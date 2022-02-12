@@ -19,9 +19,3 @@ def new_contact():
 @login_required
 def show_contact(contact_id):
     return render_template('contact-show.html.j2', contact_id=contact_id)
-
-@views.route('/contacts')
-def list():
-    tags = request.get('tags')
-    return pprint.pformat(tags)
-

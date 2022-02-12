@@ -2,12 +2,15 @@
 
 if [[ "$VIRTUAL_ENV" == "" ]]; then
   if [ ! -d .env ]; then
-    virtualenv .env
+    python3 -m venv .env
   fi
   . .env/bin/activate
 fi
 
 pip install -qr requirements-dev.txt
+
+mkdir -p instance
+touch instance/config.py
 
 cat <<EOF > instance/test.py
 FACEBOOK_APP_ID = "TEST"
@@ -18,5 +21,5 @@ EOF
 
 export SIM_CONTACTS_SETTINGS=test.py
 
-python -m pytest --ignore=vue --ignore=node_modules
+python3 -m pytest --ignore=vue --ignore=node_modules
 

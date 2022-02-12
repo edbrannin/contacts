@@ -36,6 +36,7 @@ def tag_by_id_or_name(value):
 @api.route('/tags/<tag_id>.pdf')
 @login_required
 def mailing_labels_for_tag(tag_id):
+    # TODO Optionally not indlude "Or current resident"
     tag = tag_by_id_or_name(tag_id)
     out_filename = tag.name + ".pdf"
     people = tag.taggables
@@ -44,7 +45,7 @@ def mailing_labels_for_tag(tag_id):
         p.last_name,
         ))
 
-    strIO = io.StringIO()
+    strIO = io.BytesIO()
     make_labels(people, strIO)
     strIO.seek(0)
     return send_file(strIO,

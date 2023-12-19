@@ -22,6 +22,7 @@ def write_label(label, width, height, person):
         person.name,
         person.address,
     ]
+    lines = [line for line in lines if line is not None]
     if OR_CURRENT and len("\n".join(lines).split('\n')) < 4:
         lines.insert(1, "Or current resident",)
     elif OR_CURRENT:

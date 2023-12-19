@@ -3,6 +3,8 @@ from reportlab.graphics.charts.textlabels import Label
 from reportlab.lib.units import cm, mm, inch, pica
 import labels
 
+from contacts.model import Contact
+
 BORDER=False
 OR_CURRENT = True
 
@@ -17,7 +19,7 @@ SPECS = labels.Specification(216, 279, 3, 10, 66, 25,
         )
 
 # 215.9 by 279.4
-def write_label(label, width, height, person):
+def write_label(doc, width: int, height: int, person: Contact):
     lines = [
         person.name,
         person.address,
@@ -34,7 +36,7 @@ def write_label(label, width, height, person):
     lab.fontSize = 12
     lab.setText(text)
     lab.boxAnchor = 'nw'
-    label.add(lab)
+    doc.add(lab)
 
 def make_labels(people, outfile):
     sheet = labels.Sheet(SPECS, write_label, border=BORDER)

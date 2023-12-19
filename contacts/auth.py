@@ -49,10 +49,10 @@ def login():
     try:
         scheme = app.config['PREFERRED_URL_SCHEME'] or 'http'
     except:
-        print("Error determining URL scheme")
+        app.logger.error("Error determining URL scheme")
         scheme = "http"
         traceback.print_exc()
-    print("URL scheme is {}".format(scheme))
+    app.logger.info("URL scheme is {}".format(scheme))
     callback_url = url_for(
         'oauth_authorized',
         next=request.args.get('next') or request.referrer or None,
@@ -99,7 +99,7 @@ def oauth_authorized():
     except KeyError:
         session['picture_url'] = "https://www.gravatar.com/avatar/{}".format(hashlib.md5(email).hexdigest())
 
-    print('Logged in as id={} name={} redirect={}'.format(
+    app.logger.info('Logged in as id={} name={} redirect={}'.format(
         user['id'], user['name'], request.args.get('next')))
     flash('You were signed in as {} ({})'.format(user['name'], user['id']))
     return redirect(next_url)
@@ -107,14 +107,14 @@ def oauth_authorized():
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        print("Checking for a login...")
+        app.logger.debug("Checking for a login...")
         user = g.setdefault('user')
         if user is None:
             if 'me' in session and session['me']:
                 # Legacy login, TODO remove
                 g.user = session['me']
             else:
-                print("No login.")
+                app.logger.debug("No login.")
                 return redirect(url_for('login', next=request.url))
 
         email = session['me']['email'].strip().lower()
@@ -122,6 +122,6 @@ def login_required(f):
             flash("You are not one of the allowed users.  Please ask an admin for access.")
             return logout()
 
-        print("Login OK")
+        app.logger.debug("Login OK")
         return f(*args, **kwargs)
     return decorated_function

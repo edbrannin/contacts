@@ -1,6 +1,9 @@
 import io
+import logging
 
-from flask import *
+logger = logging.getLogger(__name__)
+
+from flask import Blueprint, url_for, json, jsonify, request, session, send_file
 
 from .auth import login_required
 from .model import *
@@ -24,13 +27,13 @@ def all_tags():
 def tag_by_id_or_name(value):
     tag = Tag.query.filter_by(id=value).first()
     if tag:
-        print("Got tag by ID: {}".format(tag))
+        logger.debug("Got tag by ID: {}".format(tag))
         return tag
     tag = Tag.query.filter_by(name=value).first()
     if tag:
-        print("Got tag by name: {}".format(tag))
+        logger.debug("Got tag by name: {}".format(tag))
         return tag
-    print('No such tag found by ID or name: {}'.format(value))
+    logger.warn('No such tag found by ID or name: {}'.format(value))
     raise ValueError('No such tag found by ID or name: {}'.format(value))
 
 @api.route('/tags/<tag_id>.pdf')
@@ -95,21 +98,21 @@ def request_value(body, name):
 def new_contact():
     contact = Contact()
 
-    print("Getting JSON from {}".format(request.get_data()))
+    logger.info("Getting JSON from {}".format(request.get_data()))
     body = request.get_json()
 
 
-    print("Checking required fields")
+    logger.debug("Checking required fields")
     # Required fields
     for name in REQUIRED_FIELDS:
         if name not in body:
             # FIXME
             raise Exception("Missing required field: {}.  Request: {}".format(name, body))
 
-    print("Saving Before-state")
+    logger.debug("Saving Before-state")
     before = contact.as_dict(tags=True)
 
-    print("STARTING UPDATES")
+    logger.debug("STARTING UPDATES")
 
     contact.name = request_value(body, 'name')
     contact.last_name = request_value(body, 'last_name')
@@ -134,7 +137,7 @@ def new_contact():
         contact.tags.clear()
 
 
-    print("Saving...")
+    logger.debug("Saving...")
     db.session.add(contact)
     db.session.flush()
 
@@ -149,7 +152,7 @@ def new_contact():
 
     db.session.add(edit)
     db.session.commit()
-    print("SAVED")
+    logger.debug("SAVED")
 
     after = contact.as_dict(
             tags=True,
@@ -162,21 +165,21 @@ def new_contact():
 def put_contact(contact_id):
     contact = Contact.get_by_id(contact_id)
 
-    print("Getting JSON from {}".format(request.get_data()))
+    logger.debug("Getting JSON from {}".format(request.get_data()))
     body = request.get_json()
 
 
-    print("Checking required fields")
+    logger.debug("Checking required fields")
     # Required fields
     for name in REQUIRED_FIELDS:
         if name not in body:
             # FIXME
             raise Exception("Missing required field: {}.  Request: {}".format(name, body))
 
-    print("Saving Before-state")
+    logger.debug("Saving Before-state")
     before = contact.as_dict(tags=True)
 
-    print("STARTING UPDATES")
+    logger.debug("STARTING UPDATES")
 
     contact.name = request_value(body, 'name')
     contact.last_name = request_value(body, 'last_name')
@@ -205,7 +208,7 @@ def put_contact(contact_id):
     else:
         contact.mobile_phone = None
 
-    print("Saving...")
+    logger.debug("Saving...")
     db.session.add(contact)
     db.session.flush()
     db.session.refresh(contact)
@@ -221,6 +224,6 @@ def put_contact(contact_id):
 
     db.session.add(edit)
     db.session.commit()
-    print("SAVED")
+    logger.debug("SAVED")
 
     return jsonify(after)
